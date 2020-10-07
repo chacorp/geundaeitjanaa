@@ -20,7 +20,7 @@ public class PlayerFloat : MonoBehaviour
 
     void Update()
     {
-        if (!GameSceneManager.Instance.rotateCamera)
+        if (!GameSceneManager.Instance.useCamera)
             return;
 
         if (!up)
