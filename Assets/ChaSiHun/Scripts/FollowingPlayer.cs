@@ -13,12 +13,14 @@ public class FollowingPlayer : MonoBehaviour
 
     void followTarget()
     {
-        float distance = Vector3.Distance(target.position, transform.position);
+       // float distance = Vector3.Distance(target.position, transform.position);
+        transform.position = Vector3.Lerp(target.position, transform.position, 20f);
     }
 
     void Update()
     {
-     
-        
+        followTarget();
+
+
     }
 }
