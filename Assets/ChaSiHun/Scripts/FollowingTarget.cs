@@ -5,7 +5,7 @@ using UnityEngine;
 public class FollowingTarget : MonoBehaviour
 {
     public Transform target;
-    public float moveSpeed = 8f;
+    public float moveSpeed = 6.8f;
     public bool isPlayer;
     GameObject player;
 
@@ -25,11 +25,11 @@ public class FollowingTarget : MonoBehaviour
 
     void playerflow()
     {
-        if (!GameSceneManager.Instance.playerTube.activeSelf) { return; }
+        if (!GameSceneManager.Instance.playStart) { return; }
 
         Vector3 direction = target.position - transform.position;
         float distance = direction.magnitude;
-        //Vector3.Distance(target.position, transform.position);
+
         if (distance > 1)
         {
             transform.position += direction.normalized * moveSpeed * Time.deltaTime;
@@ -38,6 +38,15 @@ public class FollowingTarget : MonoBehaviour
 
     void npcFlow()
     {
+        if (!GameSceneManager.Instance.playStart) { return; }
+
+        Vector3 direction = player.transform.position - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance > 3)
+        {
+            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        }
     }
 
     void Update()
@@ -46,7 +55,9 @@ public class FollowingTarget : MonoBehaviour
         {
             playerflow();
         }
-
-        npcFlow();
+        else
+        {
+            npcFlow();
+        }
     }
 }

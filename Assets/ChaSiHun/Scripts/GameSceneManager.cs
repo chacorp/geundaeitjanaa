@@ -22,31 +22,46 @@
 
 public class GameSceneManager : MonoBehaviour
 {
+    // Class 싱글톤으로 만들기
     public static GameSceneManager Instance;
     GameSceneManager()
     {
         Instance = this;
     }
-    [Header("메뉴들")]
+
+    [Header("메뉴")]
     public GameObject startPage;
     public GameObject mainMenu;
 
-    [Header("위치들")]
+    [Header("위치")]
     public Transform characterSettingPos;
     public Transform waterPoolPos;
 
-    [Header("플레이어 설정")]
+    [Header("플레이어")]
     public GameObject player;
     public GameObject playerTube;
 
-    [Header("카메라 설정")]
+    [Header("카메라")]
     public Transform CamHolder;
     public bool rotateCamera;
     float rotAngleY = 0;
     float rotSpeed = 250f;
     float rotAngleX;
-    int selectFoV = 0;
-    float[] fovArray = { 30, 50, 65 };
+    float FOV;
+    int selectFoV = 1; // default is 1
+    float[] fovArray = { 25, 50, 75 };
+
+    [Header("진행 단계")]
+    public bool playStart = false;
+    // 진행단계
+    public enum SceneStage
+    {
+        openScene,
+        mainMenuScene,
+        JoinMatchScene,
+        matchFound,
+    }
+    public SceneStage stage;
 
     // 초기 세팅
     private void Awake()
@@ -56,19 +71,28 @@ public class GameSceneManager : MonoBehaviour
     // 시작 세팅
     private void Start()
     {
+        stage = SceneStage.openScene;
+        
+    }
+
+    void OpenScene()
+    {
         // 시작화면 활성화
         startPage.SetActive(true);
         // 메인메뉴 비활성화
         mainMenu.SetActive(false);
 
+        // 플레이어 프리팹 비활성화
+        player.transform.GetChild(0).gameObject.SetActive(false);
         // 화면 돌리기 비활성화
         rotateCamera = false;
     }
 
-
     // 시작화면용 메인메뉴 입장 함수
     public void OnGameEnter()
     {
+        // 플레이어 프리팹 활성화
+        player.transform.GetChild(0).gameObject.SetActive(true);
         // 플레이어 위치 초기화
         player.transform.position = characterSettingPos.position;
         // 플레이어 튜브 비활성화
@@ -92,6 +116,8 @@ public class GameSceneManager : MonoBehaviour
         player.transform.position = waterPoolPos.position;
         // 플레이어 튜브 켜두기
         playerTube.SetActive(true);
+        // 시작!
+        playStart = true;
     }
 
 
@@ -117,19 +143,29 @@ public class GameSceneManager : MonoBehaviour
     {
         // 마우스 스크롤 방향 가져오기
         float direction = Input.GetAxis("Mouse ScrollWheel");
-        if(direction > 0)
-        {
-            selectFoV++;
-        }
-        else if(direction < 0)
+        if (direction > 0)
         {
             selectFoV--;
         }
+        else if (direction < 0)
+        {
+            selectFoV++;
+        }
         // 선택범위 클램프
-        selectFoV = Mathf.Clamp(selectFoV, 0, fovArray.Length-1);
+        selectFoV = Mathf.Clamp(selectFoV, 0, fovArray.Length - 1);
 
         // 적용
-        Camera.main.fieldOfView = fovArray[selectFoV];
+        FOV = Camera.main.fieldOfView;
+        FOV = Mathf.Lerp(FOV, fovArray[selectFoV], Time.deltaTime);
+
+        // Lerp 끝단 수렴하게 해주기
+        if (FOV >= fovArray[selectFoV] - 0.05f && FOV <= fovArray[selectFoV] + .05f)
+        {
+            FOV = fovArray[selectFoV];
+        }
+        Camera.main.fieldOfView = FOV;
+
+
     }
 
     // 반복 함수
