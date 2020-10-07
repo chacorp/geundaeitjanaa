@@ -22,6 +22,11 @@
 
 public class GameSceneManager : MonoBehaviour
 {
+    public static GameSceneManager Instance;
+    GameSceneManager()
+    {
+        Instance = this;
+    }
     [Header("메뉴들")]
     public GameObject startPage;
     public GameObject mainMenu;
@@ -36,10 +41,12 @@ public class GameSceneManager : MonoBehaviour
 
     [Header("카메라 설정")]
     public Transform CamHolder;
-    bool rotateCamera;
+    public bool rotateCamera;
     float rotAngleY = 0;
     float rotSpeed = 250f;
     float rotAngleX;
+    int selectFoV = 0;
+    float[] fovArray = { 30, 50, 65 };
 
     // 초기 세팅
     private void Awake()
@@ -53,19 +60,20 @@ public class GameSceneManager : MonoBehaviour
         startPage.SetActive(true);
         // 메인메뉴 비활성화
         mainMenu.SetActive(false);
-        // 플레이어 튜브 비활성화
-        playerTube.SetActive(false);
 
         // 화면 돌리기 비활성화
         rotateCamera = false;
-        // 플레이어 위치 초기화
-        player.transform.position = characterSettingPos.position;
     }
 
 
     // 시작화면용 메인메뉴 입장 함수
     public void OnGameEnter()
     {
+        // 플레이어 위치 초기화
+        player.transform.position = characterSettingPos.position;
+        // 플레이어 튜브 비활성화
+        playerTube.SetActive(false);
+
         // 시작화면 비활성화
         startPage.SetActive(false);
         // 메인메유 활성화
@@ -90,10 +98,6 @@ public class GameSceneManager : MonoBehaviour
     // 카메라 돌리기
     void CameraRotateControl()
     {
-        if (!rotateCamera)
-        {
-            return;
-        }
         // 마우스 값 가져오기
         float mX = Input.GetAxis("Mouse X");
         float mY = Input.GetAxis("Mouse Y");
@@ -111,12 +115,30 @@ public class GameSceneManager : MonoBehaviour
 
     void CameraFOVControl()
     {
+        // 마우스 스크롤 방향 가져오기
+        float direction = Input.GetAxis("Mouse ScrollWheel");
+        if(direction > 0)
+        {
+            selectFoV++;
+        }
+        else if(direction < 0)
+        {
+            selectFoV--;
+        }
+        // 선택범위 클램프
+        selectFoV = Mathf.Clamp(selectFoV, 0, fovArray.Length-1);
 
+        // 적용
+        Camera.main.fieldOfView = fovArray[selectFoV];
     }
 
     // 반복 함수
     private void Update()
     {
-        CameraRotateControl();
+        if (rotateCamera)
+        {
+            CameraRotateControl();
+            CameraFOVControl();
+        }
     }
 }
