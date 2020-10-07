@@ -11,9 +11,9 @@ namespace PathCreation.Examples
         public float speed = 4;
         float distanceTravelled;
 
-        public GameObject target;
         public bool delay;
-        float timer;
+        public Transform target;
+        public float delayDistance = 2f;
 
         void Start()
         {
@@ -28,13 +28,12 @@ namespace PathCreation.Examples
 
         void Update()
         {
-            if (delay)
+            if (delay && target != null)
             {
-                timer += Time.deltaTime;
-                if (timer > 1)
+                float distance = Vector3.Distance(target.position, transform.position);
+                if(distance > delayDistance)
                 {
-                    speed = speed + 1f;
-                    timer = 0;
+                    speed = distance > delayDistance ? speed + 1 : speed;
                     delay = false;
                 }
             }

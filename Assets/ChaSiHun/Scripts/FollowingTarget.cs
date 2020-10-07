@@ -6,35 +6,50 @@ public class FollowingTarget : MonoBehaviour
 {
     // 따라갈 타겟
     public Transform target;
+    //float moveSpeed = 3f;
 
-    [Tooltip("플레이어들의 속도는 8이 적당하고, NPC의 속도는 6.8이 적당하다 ")]
-    public float moveSpeed = 6.8f;
-
-    // 플레이어인지 아닌지?
-    public bool isPlayer;
-
-
-    void Playerflow()
+    public enum pType
     {
-        // 플레이 시작이 아니라면 무시
-        if (!GameSceneManager.Instance.playStart) { return; }
+        isLocal, // 로컬 플레이어
+        isRPC,   // 다른 플레이어
+        isNPC    // 그냥 NPC
+    }
+    public pType playType;
 
+
+
+    void Localfollow()
+    {
         // 이동할 방향
         Vector3 direction = target.position - transform.position;
         // 타겟과의 거리
         float distance = direction.magnitude;
 
         // 타겟과의 거리에 따라 이동
-        if (distance > 1)
+        if (distance > 2.2f)
         {
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
+            // transform.position += direction.normalized * moveSpeed * Time.deltaTime;
         }
     }
 
-    void NPCsFlow()
+    void RPCsFollow()
     {
-        if (!GameSceneManager.Instance.playStart) { return; }
+        // 이동할 방향
+        Vector3 direction = target.position - transform.position;
+        // 타겟과의 거리
+        float distance = direction.magnitude;
 
+        // 타겟과의 거리에 따라 이동
+        if (distance > 4f)
+        {
+            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
+            //transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        }
+    }
+
+    void NPCsFollow()
+    {
         // 이동할 방향
         Vector3 direction = GameSceneManager.Instance.player.transform.position - transform.position;
         // 타겟과의 거리
@@ -43,20 +58,33 @@ public class FollowingTarget : MonoBehaviour
         // 타겟과의 거리에 따라 이동
         if (distance > 3)
         {
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+            // 속도에 랜덤한 변화 적용하기
+            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
+            //transform.position += direction.normalized * moveSpeed * Time.deltaTime;
         }
     }
 
     void Update()
     {
+        if (!GameSceneManager.Instance.playStart) { return; }
+
         // player인지 NPC인지 확인!
-        if (isPlayer)
+        switch (playType)
         {
-            Playerflow();
-        }
-        else
-        {
-            NPCsFlow();
+            case pType.isLocal:
+                Localfollow();
+                break;
+
+            case pType.isRPC:
+                RPCsFollow();
+                break;
+
+            case pType.isNPC:
+                NPCsFollow();
+                break;
+
+            default:
+                break;
         }
     }
 }

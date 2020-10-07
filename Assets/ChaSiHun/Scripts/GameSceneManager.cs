@@ -159,7 +159,7 @@ public class GameSceneManager : MonoBehaviour
         playStart = true;
 
         // 플레이어 위치 갱신
-        player.transform.position = joinPoolPos.position;
+        player.transform.position = joinPoolPos.position + Vector3.up * 2f;
         player.transform.localEulerAngles = Vector3.zero;
     }
 
