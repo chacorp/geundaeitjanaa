@@ -4,45 +4,43 @@ using UnityEngine;
 
 public class FollowingTarget : MonoBehaviour
 {
+    // 따라갈 타겟
     public Transform target;
+
+    [Tooltip("플레이어들의 속도는 8이 적당하고, NPC의 속도는 6.8이 적당하다 ")]
     public float moveSpeed = 6.8f;
+
+    // 플레이어인지 아닌지?
     public bool isPlayer;
-    GameObject player;
 
-    void Start()
-    {
-        // 만약 이게 플레이어라면 이걸 저장
-        if (isPlayer)
-        {
-            player = this.gameObject;
-        }
-        else
-        { 
-            //만약 플레이어가 아니라면 플레이어를 찾아서 저장
-            player = GameObject.Find("Player");
-        }
-    }
 
-    void playerflow()
+    void Playerflow()
     {
+        // 플레이 시작이 아니라면 무시
         if (!GameSceneManager.Instance.playStart) { return; }
 
+        // 이동할 방향
         Vector3 direction = target.position - transform.position;
+        // 타겟과의 거리
         float distance = direction.magnitude;
 
+        // 타겟과의 거리에 따라 이동
         if (distance > 1)
         {
             transform.position += direction.normalized * moveSpeed * Time.deltaTime;
         }
     }
 
-    void npcFlow()
+    void NPCsFlow()
     {
         if (!GameSceneManager.Instance.playStart) { return; }
 
-        Vector3 direction = player.transform.position - transform.position;
+        // 이동할 방향
+        Vector3 direction = GameSceneManager.Instance.player.transform.position - transform.position;
+        // 타겟과의 거리
         float distance = direction.magnitude;
 
+        // 타겟과의 거리에 따라 이동
         if (distance > 3)
         {
             transform.position += direction.normalized * moveSpeed * Time.deltaTime;
@@ -51,13 +49,14 @@ public class FollowingTarget : MonoBehaviour
 
     void Update()
     {
+        // player인지 NPC인지 확인!
         if (isPlayer)
         {
-            playerflow();
+            Playerflow();
         }
         else
         {
-            npcFlow();
+            NPCsFlow();
         }
     }
 }
