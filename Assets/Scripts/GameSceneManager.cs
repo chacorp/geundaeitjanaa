@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityStandardAssets.Utility;
 
 // 1. 시작화면
 //    -> 버튼 (메인메뉴)
