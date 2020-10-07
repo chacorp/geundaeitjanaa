@@ -359,18 +359,18 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: -4.350084, y: -0.6192361, z: 0.36958665}
-      - {x: -4.3119984, y: -0.27224493, z: 2.7627096}
-      - {x: -2.500093, y: 1.7315861, z: 2.2386506}
-      - {x: 0.14839771, y: 1.7105651, z: 2.2219813}
-      - {x: 2.7968912, y: 1.6895441, z: 2.205312}
-      - {x: 4.16408, y: -0.44785511, z: 2.1293974}
-      - {x: 4.3446193, y: -0.6192361, z: 0.36958665}
-      - {x: 4.5251584, y: -0.7906171, z: -1.390224}
-      - {x: 3.2920637, y: 0.7694727, z: -2.9261537}
-      - {x: 0.77272415, y: 0.83640313, z: -3.0503848}
-      - {x: -1.7466154, y: 0.90333354, z: -3.1746159}
-      - {x: -4.3881693, y: -0.9662273, z: -2.0235362}
+      - {x: -4.355197, y: -0.6187649, z: 0.25872487}
+      - {x: -4.317112, y: -0.27177367, z: 2.6518478}
+      - {x: -1.347868, y: -0.27805954, z: 3.2845716}
+      - {x: 1.3006227, y: -0.29908055, z: 3.2679024}
+      - {x: 3.9491162, y: -0.32010156, z: 3.251233}
+      - {x: 4.158967, y: -0.44738385, z: 2.0185356}
+      - {x: 4.339506, y: -0.6187649, z: 0.25872487}
+      - {x: 4.5200453, y: -0.7901459, z: -1.5010858}
+      - {x: 3.1767766, y: -0.28798038, z: -3.4517746}
+      - {x: 0.6574368, y: -0.22104996, z: -3.5760057}
+      - {x: -1.861903, y: -0.15411955, z: -3.7002368}
+      - {x: -4.393283, y: -0.96575606, z: -2.134398}
       isClosed: 1
       space: 0
       controlMode: 1
@@ -384,7 +384,7 @@ MonoBehaviour:
       - 0
       - 0
       - 0
-      globalNormalsAngle: 69
+      globalNormalsAngle: 90
       flipNormals: 0
     vertexPathUpToDate: 1
     vertexPathMaxAngleError: 0.3
@@ -399,11 +399,11 @@ MonoBehaviour:
     keepConstantHandleSize: 0
     showNormalsInVertexMode: 0
     showBezierPathInVertexMode: 0
-    showDisplayOptions: 0
+    showDisplayOptions: 1
     showPathOptions: 1
     showVertexPathDisplayOptions: 0
     showVertexPathOptions: 1
-    showNormals: 0
+    showNormals: 1
     showNormalsHelpInfo: 0
     tabIndex: 0
   initialized: 1
@@ -415,7 +415,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184727957}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4.48}
+  m_LocalPosition: {x: 0.02045393, y: 0.35, z: -1.76}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -454,9 +454,9 @@ MonoBehaviour:
   mainMenu: {fileID: 1891702805}
   characterSettingPos: {fileID: 1847883465}
   waterPoolPos: {fileID: 1899148861}
-  player: {fileID: 0}
-  playerTube: {fileID: 0}
-  CamHolder: {fileID: 0}
+  player: {fileID: 711089235}
+  playerTube: {fileID: 1280537250}
+  CamHolder: {fileID: 1679343506}
   rotateCamera: 0
 --- !u!4 &216242840
 Transform:
@@ -909,19 +909,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 779849212}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &711089237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 711089235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9260556635a514f4f84d194b702aefea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 4125966568418122}
 --- !u!1001 &779849212
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1395,6 +1382,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1280537250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4822528607433923864, guid: c89cf2c7c08b40a4eb948818db43e2ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 779849212}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1311829618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1828,6 +1821,12 @@ Transform:
   m_Father: {fileID: 1071871937}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!4 &1679343506 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7772533258725817481, guid: c89cf2c7c08b40a4eb948818db43e2ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 779849212}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1732824764
 PrefabInstance:
   m_ObjectHideFlags: 0
