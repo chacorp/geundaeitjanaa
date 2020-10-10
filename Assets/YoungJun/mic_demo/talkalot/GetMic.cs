@@ -42,11 +42,12 @@ public class GetMic : MonoBehaviour
         {
             Microphone.End(microphone);
 
-            // Play recorded audio, just for testing purpose.
+            //Play recorded audio, just for testing purpose.
+
             //audioSource.Play();
+            SavWav.Save("original", audioSource.clip);
 
             GetSpectrumAudioSource();
-
         }
     }
 
@@ -67,6 +68,8 @@ public class GetMic : MonoBehaviour
         }
         else Debug.Log(microphone + " : NOT being recorded");
     }
+
+
 
     void GetSpectrumAudioSource()
     {
