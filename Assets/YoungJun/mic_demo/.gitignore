@@ -1,0 +1,49 @@
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Ll]ibrary/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+*.pidb.meta
+
+# ============================= #
+# Unity generated crash reports #
+# ============================= #
+sysinfo.txt
+
+# ============ #
+# Unity builds #
+# ============ #
+*.apk
+*.unitypackage
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+.consulo/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.tmp
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
