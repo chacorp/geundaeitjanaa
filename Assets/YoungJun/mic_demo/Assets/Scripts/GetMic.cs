@@ -9,9 +9,11 @@ public class GetMic : MonoBehaviour
     public string microphone;
 
     private List<string> options = new List<string>();
-    private int samples = 8192;
-    public float[] spectrum = new float[1024];
-    private AudioSource audioSource;
+
+    //public float[] _spectrum = new float[512];
+    //public float[] outputs = new float[512];
+
+    public AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +29,7 @@ public class GetMic : MonoBehaviour
             options.Add(device);
         }
 
-        microphone = options[PlayerPrefsManager.GetMicrophone()];
+        microphone = options[_PlayerPrefsManager.GetMicrophone()];
     }
 
 
@@ -43,12 +45,17 @@ public class GetMic : MonoBehaviour
             Microphone.End(microphone);
 
             //Play recorded audio, just for testing purpose.
-
             //audioSource.Play();
-            SavWav.Save("original", audioSource.clip);
-
-            GetSpectrumAudioSource();
+            //SavWav.Save("original", audioSource.clip);
         }
+
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            audioSource.Play();
+            //audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Blackman);
+        }
+
+
     }
 
     void UpdateMicrophone()
@@ -58,7 +65,8 @@ public class GetMic : MonoBehaviour
         audioSource.Stop();
         // Start recording to audioclip from the mic
         // .Start(device name, loop, int time, int freq)
-        audioSource.clip = Microphone.Start(microphone, true, 10, audioSampleRate);
+        audioSource.clip = Microphone.Start(microphone, false, 10, audioSampleRate);
+        //audioSource.GetSpectrumData(_spectrum, 0, FFTWindow.Blackman);
         //audioSource.loop = true;
         //Debug.Log(down + "seconds has been recorded");
 
@@ -68,12 +76,4 @@ public class GetMic : MonoBehaviour
         }
         else Debug.Log(microphone + " : NOT being recorded");
     }
-
-
-
-    void GetSpectrumAudioSource()
-    {
-        audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Rectangular);
-    }
-
 }
