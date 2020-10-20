@@ -34,7 +34,8 @@ public class GameSceneManager : MonoBehaviour
     public GameObject mainMenu;
 
     [Header("위치")]
-    public Transform characterSettingPos;
+    public Transform cameraPos;
+    public Transform mainmenuPos;
     public Transform joinPoolPos;
 
     [Header("플레이어")]
@@ -42,7 +43,8 @@ public class GameSceneManager : MonoBehaviour
     public GameObject playerTube;
 
     [Header("카메라")]
-    public Transform CamHolder;
+    public Transform menuCam;
+    public Transform playerCam;
     Vector3 camHolderPos;
     public bool useCamera;
     float rotAngleY = 0;
@@ -79,11 +81,16 @@ public class GameSceneManager : MonoBehaviour
     {
         // 카메라 사용 안함!
         useCamera = false;
-        // 카메라 홀더 위치값 가져오기
-        camHolderPos = CamHolder.position;
+
+        menuCam.gameObject.SetActive(false);
+        playerCam.gameObject.SetActive(true);
 
         // 진행 단계 => 시작하기
         state = SceneState.open_State;
+
+        // 플레이어 위치 초기화
+        player.transform.position = mainmenuPos.position;
+        player.transform.localEulerAngles = new Vector3(0, 180, 0);
     }
 
 
@@ -91,11 +98,10 @@ public class GameSceneManager : MonoBehaviour
     {
         // 시작화면 활성화
         startPage.SetActive(true);
+
         // 메인메뉴 비활성화
         mainMenu.SetActive(false);
 
-        // 플레이어 프리팹 비활성화
-        player.transform.GetChild(0).gameObject.SetActive(false);
         // 화면 돌리기 비활성화
         useCamera = false;
     }
@@ -105,16 +111,15 @@ public class GameSceneManager : MonoBehaviour
         // 시작 아님
         playStart = false;
 
-        // 카메라 홀더 위치조절
-        CamHolder.parent = characterSettingPos;
-        CamHolder.localPosition = camHolderPos + Vector3.right * -1.5f;
-
         // 플레이어 프리팹 활성화
-        player.transform.GetChild(0).gameObject.SetActive(true);
-        // 플레이어 위치 초기화
-        player.transform.position = characterSettingPos.position;
+        //player.transform.GetChild(0).gameObject.SetActive(true);
+
         // 플레이어 튜브 비활성화
-        playerTube.SetActive(false);
+        //playerTube.SetActive(false);
+
+        menuCam.gameObject.SetActive(true);
+        playerCam.gameObject.SetActive(false);
+
 
         // 시작화면 비활성화
         startPage.SetActive(false);
@@ -125,8 +130,8 @@ public class GameSceneManager : MonoBehaviour
     void JoinMatchState()
     {
         // 카메라 홀더 위치조절
-        CamHolder.parent = player.transform;
-        CamHolder.localPosition = camHolderPos;
+        playerCam.parent = player.transform;
+        playerCam.localPosition = camHolderPos;
 
         // 카메라 사용함!
         useCamera = true;
@@ -159,8 +164,11 @@ public class GameSceneManager : MonoBehaviour
         playStart = true;
 
         // 플레이어 위치 갱신
-        player.transform.position = joinPoolPos.position + Vector3.up * 2f;
-        player.transform.localEulerAngles = Vector3.zero;
+        // player.transform.position = joinPoolPos.position + Vector3.up * 2f;
+        //player.transform.localEulerAngles = Vector3.zero;
+
+        playerCam.gameObject.SetActive(true);
+        menuCam.gameObject.SetActive(false);
     }
 
     int ScrollDirection()
@@ -196,7 +204,7 @@ public class GameSceneManager : MonoBehaviour
         rotAngleX = Mathf.Clamp(rotAngleX, -10, 60);
 
         // 회전각도 갱신
-        CamHolder.localEulerAngles = new Vector3(rotAngleX, rotAngleY, CamHolder.localEulerAngles.z);
+        playerCam.localEulerAngles = new Vector3(rotAngleX, rotAngleY, playerCam.localEulerAngles.z);
     }
     
     // 카메라 컨트롤 함수 (2)

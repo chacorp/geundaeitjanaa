@@ -25,10 +25,10 @@ public class FollowingTarget : MonoBehaviour
         // 타겟과의 거리
         float distance = direction.magnitude;
 
+        transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
         // 타겟과의 거리에 따라 이동
         if (distance > 2.2f)
         {
-            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
             // transform.position += direction.normalized * moveSpeed * Time.deltaTime;
         }
     }
@@ -40,10 +40,10 @@ public class FollowingTarget : MonoBehaviour
         // 타겟과의 거리
         float distance = direction.magnitude;
 
+            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
         // 타겟과의 거리에 따라 이동
         if (distance > 4f)
         {
-            transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime);
             //transform.position += direction.normalized * moveSpeed * Time.deltaTime;
         }
     }
