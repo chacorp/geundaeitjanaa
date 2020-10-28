@@ -41,6 +41,7 @@ public class GameSceneManager : MonoBehaviour
     [Header("플레이어")]
     public GameObject player;
     public GameObject playerTube;
+    public float jumpP = 50;
 
     [Header("카메라")]
     public Transform menuCam;
@@ -61,7 +62,7 @@ public class GameSceneManager : MonoBehaviour
     [Header("진행 단계")]
     // 플레이 시작!?
     public bool playStart = false;
-
+    public bool startButtonClicked;
     // 진행단계
     public enum SceneState
     {
@@ -77,6 +78,8 @@ public class GameSceneManager : MonoBehaviour
     // 기본 세팅
     private void Start()
     {
+        startButtonClicked = false;
+
         // 카메라 사용 안함!
         useCamera = false;
 
@@ -147,6 +150,7 @@ public class GameSceneManager : MonoBehaviour
     public void OnGameOpen()
     {
         state = SceneState.mainMenu_State;
+        startButtonClicked = true;
     }
 
     // 메인메뉴 -> [Join_the_Pool] 버튼용 함수
@@ -162,8 +166,8 @@ public class GameSceneManager : MonoBehaviour
         // 점프
         print("jump");
         Rigidbody playerR = player.GetComponent<Rigidbody>();
-        Vector3 jumpIn = (player.transform.forward * 100) + (player.transform.up * 100);
-        playerR.AddForce(jumpIn);
+        Vector3 jumpIn = (player.transform.forward * -jumpP) + (player.transform.up * jumpP);
+        playerR.AddForce(jumpIn, ForceMode.VelocityChange);
     }
 
     // 마우스 스크롤링
