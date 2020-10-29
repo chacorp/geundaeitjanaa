@@ -9,10 +9,9 @@ public class NPCManager : MonoBehaviour
 
     public float JumpP = 5f;
     public float MoveP = 5f;
-    int n_idx;
+    int n_idx = 0;
 
     float timer = 0;
-    bool Jumped = false;
     enum Sequence
     {
         jump,
@@ -20,6 +19,7 @@ public class NPCManager : MonoBehaviour
         moveOn,
         reset,
     }
+    [SerializeField]
     Sequence Step;
     Transform npcJ_T;
     Rigidbody npcJ_R;
@@ -62,9 +62,10 @@ public class NPCManager : MonoBehaviour
                 npcWait.Remove(npcJ_T);
 
                 // 4. 뒤에 녀석들 하나씩 앞으로 땡기기
-                Vector3 dir = npcPos[n_idx] - npcWait[n_idx].position;
-                npcWait[n_idx].Translate(dir * Time.deltaTime);
-
+                //Vector3 dir = npcPos[n_idx] - npcWait[n_idx].position;
+                //npcWait[n_idx].transform.position += dir * Time.deltaTime;
+                // npcWait[n_idx].Translate(dir * Time.deltaTime);
+                npcWait[n_idx].transform.position = Vector3.Lerp(npcWait[n_idx].transform.position, npcWait[n_idx].position, MoveP * Time.deltaTime);
                 if (npcWait[n_idx].position == npcPos[n_idx])
                 {
                     npcWait[n_idx].position = npcWait[n_idx].position;
