@@ -2308,7 +2308,9 @@ MonoBehaviour:
   - {fileID: 952976809}
   npcPos: []
   JumpP: 5
-  MoveP: 5
+  MoveP: 2.5
+  n_idx: 0
+  Step: 0
 --- !u!1001 &1841248140
 PrefabInstance:
   m_ObjectHideFlags: 0
