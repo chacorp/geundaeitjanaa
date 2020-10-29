@@ -4,40 +4,23 @@ using UnityEngine;
 
 public class PlayerFloat : MonoBehaviour
 {
-    public float height = 2f;
-    public float floatSpeed = 0.5f;
-    Vector3 maxYpos;
-    Vector3 minYpos;
-    Vector3 velo = Vector3.zero;
-    bool up = true;
-
+    int floatingScript = 0;
+    Floater_wo_Physics FwP;
     void Start()
     {
-        Vector3 pos = transform.position;
-        maxYpos = new Vector3(pos.x, pos.y + (height / 2), pos.z);
-        minYpos = new Vector3(pos.x, pos.y - (height / 2), pos.z);
     }
 
     void Update()
     {
-        if (!GameSceneManager.Instance.useCamera)
-            return;
+    }
 
-        if (!up)
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Finish") && floatingScript < 1)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, minYpos, ref velo, floatSpeed);
-            if (transform.position.y <= minYpos.y + 0.01f)
-            {
-                up = true;
-            }
-        }
-        else
-        {
-            transform.position = Vector3.SmoothDamp(transform.position, maxYpos, ref velo, floatSpeed);
-            if (transform.position.y >= maxYpos.y - 0.01f)
-            {
-                up = false;
-            }
+            FwP = gameObject.AddComponent<Floater_wo_Physics>();
+            FwP.amplitude = 0.3f;
+            floatingScript++;
         }
     }
 }

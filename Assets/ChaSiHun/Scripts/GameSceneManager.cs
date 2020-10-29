@@ -30,8 +30,10 @@ public class GameSceneManager : MonoBehaviour
     }
 
     [Header("메뉴")]
-    public GameObject startPage;
-    public GameObject mainMenu;
+    public GameObject startGame_Scene;
+    public GameObject mainMenu_Scene;
+    public GameObject preference_Scene;
+    public GameObject lookattheAlbum_Scene;
 
     [Header("위치")]
     public Transform cameraPos;
@@ -40,19 +42,20 @@ public class GameSceneManager : MonoBehaviour
 
     [Header("플레이어")]
     public GameObject player;
-    public GameObject playerTube;
-    public float jumpP = 50;
+    public float jumpP = 5f;
 
     [Header("카메라")]
     public Transform menuCam;
     public Transform playerCam;
     Vector3 camHolderPos;
     public bool useCamera;
+
     float rotAngleY = 0;
     float rotSpeed = 250f;
     float rotAngleX;
     float camView;
-    int select = 1; // default is 1
+    int scroll = 1; // default is 1
+
     // perspective
     float[] fovArray = { 8.5f, 20f, 35f };
     // orthographic
@@ -61,23 +64,14 @@ public class GameSceneManager : MonoBehaviour
 
     [Header("진행 단계")]
     // 플레이 시작!?
-    public bool playStart = false;
     public bool startButtonClicked;
-    // 진행단계
-    public enum SceneState
-    {
-        open_State,         // 시작하기
-        mainMenu_State,     // 메인 메뉴
-        joinMatch_State,    // 매칭 풀장 들어가기
-        matchFound_State,   // 매칭 완료
-        endMatch_State      // 매칭 끝내기
-    }
-    public SceneState state;
+    public bool playStart = false;
 
 
     // 기본 세팅
     private void Start()
     {
+        // 시작버튼 안 눌린 상태
         startButtonClicked = false;
 
         // 카메라 사용 안함!
@@ -86,89 +80,109 @@ public class GameSceneManager : MonoBehaviour
         menuCam.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
 
-        // 진행 단계 => 시작하기
-        state = SceneState.open_State;
 
         // 플레이어 위치 초기화
         player.transform.position = mainmenuPos.position;
         player.transform.localEulerAngles = new Vector3(0, 180, 0);
+        player.SetActive(false);
+
+
+        // UI 셋팅화면 비활성화
+        preference_Scene.SetActive(false);
+        // 앨범 화면 비활성화
+        lookattheAlbum_Scene.SetActive(false);
+        // 시작화면 활성화
+        startGame_Scene.SetActive(true);
+        // 메인메뉴 비활성화
+        mainMenu_Scene.SetActive(false);
     }
 
     // 1. 시작하기
     void OpenState()
     {
-        // 시작화면 활성화
-        startPage.SetActive(true);
-
-        // 메인메뉴 비활성화
-        mainMenu.SetActive(false);
-
-        // 화면 돌리기 비활성화
-        useCamera = false;
     }
 
     // 2. 메인 메뉴
     void MainMenuState()
     {
-        playStart = false;
-
-        menuCam.gameObject.SetActive(true);
-        playerCam.gameObject.SetActive(false);
-
-
-        // 시작화면 비활성화
-        startPage.SetActive(false);
-        // 메인메뉴 활성화
-        mainMenu.SetActive(true);
     }
 
     // 3. 매칭 풀장 들어가기
     void JoinMatchState()
     {
-        // 카메라 홀더 위치조절
-        playerCam.parent = player.transform.GetChild(0).transform;
-        playerCam.localPosition = camHolderPos;
-
-        // 카메라 사용함!
-        useCamera = true;
-
-        // 메인메뉴 비활성화
-        mainMenu.SetActive(false);
-
-        // 플레이어 튜브 켜두기
-        playerTube.SetActive(true);
     }
 
     // 4. 다른 플레이어와 매칭 성공
     void MatchFoundState()
     {
-
     }
 
 
-    // 시작화면 -> [StartGame] 버튼용 함수
-    public void OnGameOpen()
+    // 시작화면 -> [StartGame] ======================= 버튼용 함수
+    public void OnStartGameClicked()
     {
-        state = SceneState.mainMenu_State;
+        //state = SceneState.mainMenu_State;
         startButtonClicked = true;
+
+        playStart = false;
+
+        menuCam.gameObject.SetActive(true);
+        playerCam.gameObject.SetActive(false);
+
+        // 시작화면 비활성화
+        startGame_Scene.SetActive(false);
+        // 메인메뉴 활성화
+        mainMenu_Scene.SetActive(true);
+
+        player.SetActive(true);
     }
 
-    // 메인메뉴 -> [Join_the_Pool] 버튼용 함수
-    public void OnGameJoin()
-    {
-        state = SceneState.joinMatch_State;
 
+    // 메인메뉴 -> [Join_the_Pool] =================== 버튼용 함수
+    public void OnJointhePoolClicked()
+    {
         // 시작!
         playStart = true;        
         playerCam.gameObject.SetActive(true);
         menuCam.gameObject.SetActive(false);
 
+        // 카메라 사용함!
+        useCamera = true;
+
+        // 카메라 홀더 위치조절
+        playerCam.parent = player.transform.GetChild(0).transform;
+        playerCam.localPosition = camHolderPos;
+
+        // 메인메뉴 비활성화
+        mainMenu_Scene.SetActive(false);
+
         // 점프
-        print("jump");
+        print("player jumped");
         Rigidbody playerR = player.GetComponent<Rigidbody>();
         Vector3 jumpIn = (player.transform.forward * -jumpP) + (player.transform.up * jumpP);
         playerR.AddForce(jumpIn, ForceMode.VelocityChange);
     }
+
+    // 메인메뉴 -> [Look at the Album] =============== 버튼용 함수
+    public void OnLookattheAlbumClicked()
+    {
+        lookattheAlbum_Scene.SetActive(true);
+    }
+
+    // 메인메뉴 -> [Preferences] ===================== 버튼용 함수
+    public void OnPreferenceClicked()
+    {
+        preference_Scene.SetActive(true);
+    }
+
+    // 메인메뉴 -> [Back to the Game] ================ 버튼용 함수
+    public void OnBacktoGameClicked()
+    {
+        lookattheAlbum_Scene.SetActive(false);
+        preference_Scene.SetActive(false);
+    }
+
+
 
     // 마우스 스크롤링
     int ScrollDirection()
@@ -176,16 +190,16 @@ public class GameSceneManager : MonoBehaviour
         float direction = Input.GetAxis("Mouse ScrollWheel");
         if (direction > 0)
         {
-            select--;
+            scroll--;
         }
         else if (direction < 0)
         {
-            select++;
+            scroll++;
         }
         // 선택범위 클램프
-        select = Mathf.Clamp(select, 0, fovArray.Length - 1);
+        scroll = Mathf.Clamp(scroll, 0, fovArray.Length - 1);
 
-        return select;
+        return scroll;
     }
 
     // 카메라 회전 컨트롤 (1)
@@ -218,9 +232,9 @@ public class GameSceneManager : MonoBehaviour
         camView = Mathf.Lerp(camView, viewArray[ScrollDirection()], Time.deltaTime);
 
         // Lerp 끝단 수렴하게 해주기
-        if (camView >= viewArray[select] - 0.05f && camView <= viewArray[select] + .05f)
+        if (camView >= viewArray[scroll] - 0.05f && camView <= viewArray[scroll] + .05f)
         {
-            camView = viewArray[select];
+            camView = viewArray[scroll];
         }
 
         if (Camera.main.orthographic)
@@ -234,6 +248,7 @@ public class GameSceneManager : MonoBehaviour
     }
 
 
+
     private void Update()
     {
         // 카메라 사용여부 확인하기
@@ -241,37 +256,6 @@ public class GameSceneManager : MonoBehaviour
         {
             CameraRotateControl();
             CameraViewControl();
-        }
-
-        // 진행단계에 따라 전환하기
-        switch (state)
-        {
-            // 처음 시작할 때
-            case SceneState.open_State:
-                OpenState();
-                break;
-
-            // 메인메뉴 들어갈 때
-            case SceneState.mainMenu_State:
-                MainMenuState();
-                break;
-
-            // 풀장에 들어갈 때 => 매칭시작
-            case SceneState.joinMatch_State:
-                JoinMatchState();
-                break;
-
-            // 매칭 되었을 때
-            case SceneState.matchFound_State:
-                MatchFoundState();
-                break;
-
-            case SceneState.endMatch_State:
-                break;
-
-            // 그냥 디폴트(암것도 안함)
-            default:
-                break;
         }
     }
 }
