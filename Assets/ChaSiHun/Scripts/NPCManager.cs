@@ -46,6 +46,8 @@ public class NPCManager : MonoBehaviour
         else if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.GameStart && Step == Sequence.reset) Step = Sequence.jump;
 
         Prefab_Float nFwP;
+
+        // NPC 애니매이션 스텝!!
         switch (Step)
         {
             case Sequence.jump:
@@ -123,7 +125,7 @@ public class NPCManager : MonoBehaviour
 
     void NPC_ACTIVE_CONTROLL()
     {
-        if ((int)GameSceneManager.Instance.currentScene >= 1)
+        if ((int)GameSceneManager.Instance.currentScene > 0)
         {
             // 맨 앞자리 녀석 비활성화
             if (npcWait[0].gameObject.activeSelf) npcWait[0].gameObject.SetActive(false);

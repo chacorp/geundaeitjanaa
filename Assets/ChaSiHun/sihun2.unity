@@ -1297,6 +1297,7 @@ MonoBehaviour:
   preference_UI: {fileID: 229642456}
   lookattheAlbum_UI: {fileID: 14539462}
   jointhePool_UI: {fileID: 1263590228}
+  escape_btn: {fileID: 1047770948}
   cameraPos: {fileID: 1847883465}
   mainmenuPos: {fileID: 1023119694}
   player: {fileID: 5629519890812572967}
@@ -1971,7 +1972,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &460955225
 Transform:
   m_ObjectHideFlags: 0
@@ -3122,7 +3123,7 @@ GameObject:
   - component: {fileID: 940784885}
   - component: {fileID: 940784884}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Menu Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6928,7 +6929,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3422617177405083441}
   m_LocalRotation: {x: 0, y: -0.19509031, z: -0, w: 0.98078537}
-  m_LocalPosition: {x: -4.405, y: 1, z: -26.509998}
+  m_LocalPosition: {x: -4.3, y: 1, z: -26.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1572844230858907976}

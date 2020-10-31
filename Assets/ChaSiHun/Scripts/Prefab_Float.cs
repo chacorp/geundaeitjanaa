@@ -42,6 +42,7 @@ public class Prefab_Float : MonoBehaviour
     {
         if (isFloating)
         {
+            // 캐릭터 마다 다르게 적용하기
             switch (playerType)
             {
                 case Ptype.player:
@@ -51,10 +52,8 @@ public class Prefab_Float : MonoBehaviour
                     pf.speed = -floatingSpeed;
                     break;
 
-
                 case Ptype.RPC:
                     break;
-
 
                 case Ptype.NPC:
                     transform.parent.position += transform.parent.right * floatingSpeed * Time.deltaTime;
@@ -85,11 +84,10 @@ public class Prefab_Float : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 물 바닥에 부딪혔을때
+        // 물 바닥에 부딪혔을때, <Floater_wo_Physics> 컴포넌트 활성화하기
         if (collision.gameObject.CompareTag("Finish") && !isFloating)
         {
             isFloating = true;
-            // <Floater_wo_Physics> 컴포넌트 활성화하기
             FwP.enabled = true;
         }
     }

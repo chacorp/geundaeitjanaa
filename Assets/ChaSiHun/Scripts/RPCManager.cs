@@ -87,15 +87,16 @@ public class RPCManager : MonoBehaviour
         if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.FindMatch)
         {
             // currentRPC = 참여하고 있는 플레이어 수 가져오기
-            if (Input.GetMouseButtonDown(1) && currentPlayer < MaxRPCs)
+            if (Input.GetKeyDown(KeyCode.A) && currentPlayer < MaxRPCs)
             {
                 currentPlayer++;
                 GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.MatchFound;
             }
         }
+
         if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.MatchFound)
         {
-            if (Input.GetKeyDown(KeyCode.Q) && currentPlayer > 0)
+            if (Input.GetKeyDown(KeyCode.D) && currentPlayer > 0)
             {
                 currentPlayer--;
                 GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.FindMatch;
@@ -141,7 +142,7 @@ public class RPCManager : MonoBehaviour
             previousPlayer = currentPlayer;
         }
 
-        // 접근하기
+        // RPC를 플레이어에게 접근시키기
         if (isApproaching) GetApproach();
     }
 }
