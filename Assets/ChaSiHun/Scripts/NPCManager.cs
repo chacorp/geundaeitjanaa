@@ -10,9 +10,9 @@ public class NPCManager : MonoBehaviour
 
     public float JumpP = 5f;
     public float MoveP = 2.5f;
-    public float delayTime = 2f;
+    public float delayTime = 1f;
 
-    [SerializeField]
+    //[SerializeField]
     int n_idx = 0;
     float timer = 0;
 
@@ -40,14 +40,18 @@ public class NPCManager : MonoBehaviour
     void NPCJUMP()
     {
         // [StartGame] 버튼이 눌렸다면, 리셋하기
-        if (GameSceneManager.Instance.startButtonClicked) Step = Sequence.reset;
+        if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.MainMenu) Step = Sequence.reset;
 
+        // 만약 [Escape] 버튼을 눌렀고, 스텝이 '리셋'이라면, 다시 루프 돌리기 바꾸기
+        else if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.GameStart && Step == Sequence.reset) Step = Sequence.jump;
+
+        Prefab_Float nFwP;
         switch (Step)
         {
             case Sequence.jump:
                 // 1. 첫번째 녀석 점프
                 npcJ_T = npcWait[0];
-                npcJ_R = npcJ_T.GetComponent<Rigidbody>();
+                npcJ_R = npcJ_T.GetComponentInChildren<Rigidbody>();
                 npcJ_R.AddForce(transform.forward * JumpP + transform.up * JumpP, ForceMode.VelocityChange);
                 // 2. 리스트에서 옮기기
                 npcWait.Remove(npcJ_T);
@@ -82,6 +86,10 @@ public class NPCManager : MonoBehaviour
                 // 5. 점프한 첫번째 맨 뒤로 옮기기
                 npcWait.Add(npcJ_T);
                 npcJ_T.position = npcPos[npcWait.IndexOf(npcJ_T)];
+                npcJ_T.GetChild(0).localPosition = Vector3.up;
+
+                nFwP = npcJ_T.GetComponentInChildren<Prefab_Float>();
+                if (nFwP) nFwP.EndFloating();
 
                 // 6. 인덱스 리셋
                 n_idx = 0;
@@ -92,29 +100,44 @@ public class NPCManager : MonoBehaviour
                 // 점프 뛴 녀석이 있다면
                 if (npcJ_T)
                 {
+                    // 두둥실 없애기
+                    nFwP = npcJ_T.GetComponentInChildren<Prefab_Float>();
+                    if (nFwP) nFwP.EndFloating();
+
                     // 다시 대기열에 넣어주고
                     npcWait.Add(npcJ_T);
+
                     // 뛴 녀석은 이제 없다
                     npcJ_T = null;
                 }
                 // 위치 리셋!
-                foreach (Transform n in npcWait) n.position = npcPos[npcWait.IndexOf(n)];
-
+                foreach (Transform n in npcWait)
+                {
+                    n.GetChild(0).localPosition = Vector3.up;
+                    n.position = npcPos[npcWait.IndexOf(n)];
+                }
+                n_idx = 0;
                 break;
         }
     }
 
-    void MainMenu()
+    void NPC_ACTIVE_CONTROLL()
     {
-        if (GameSceneManager.Instance.startButtonClicked)
+        if ((int)GameSceneManager.Instance.currentScene >= 1)
         {
+            // 맨 앞자리 녀석 비활성화
             if (npcWait[0].gameObject.activeSelf) npcWait[0].gameObject.SetActive(false);
+        }
+        else
+        {
+            // 맨 앞자리 녀석 활성화
+            if (!npcWait[0].gameObject.activeSelf) npcWait[0].gameObject.SetActive(true);
         }
     }
 
     void Update()
     {
+        NPC_ACTIVE_CONTROLL();
         NPCJUMP();
-        MainMenu();
     }
 }

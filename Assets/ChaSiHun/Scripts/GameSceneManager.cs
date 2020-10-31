@@ -30,24 +30,26 @@ public class GameSceneManager : MonoBehaviour
     }
 
     [Header("메뉴")]
-    public GameObject startGame_Scene;
-    public GameObject mainMenu_Scene;
-    public GameObject preference_Scene;
-    public GameObject lookattheAlbum_Scene;
+    public GameObject startGame_UI;
+    public GameObject mainMenu_UI;
+    public GameObject preference_UI;
+    public GameObject lookattheAlbum_UI;
+    public GameObject jointhePool_UI;
 
     [Header("위치")]
     public Transform cameraPos;
     public Transform mainmenuPos;
-    public Transform joinPoolPos;
 
     [Header("플레이어")]
     public GameObject player;
+    public GameObject playerPrefab;
     public float jumpP = 5f;
 
     [Header("카메라")]
     public Transform menuCam;
     public Transform playerCam;
     Vector3 camHolderPos;
+    Vector3 camHolderRot;
     public bool useCamera;
 
     float rotAngleY = 0;
@@ -56,45 +58,65 @@ public class GameSceneManager : MonoBehaviour
     float camView;
     int scroll = 1; // default is 1
 
+    [Header("진행 단계")]
     // perspective
     float[] fovArray = { 8.5f, 20f, 35f };
     // orthographic
     float[] sizeArray = { 1.25f, 3f, 5f };
-    
 
-    [Header("진행 단계")]
+
     // 플레이 시작!?
-    public bool startButtonClicked;
-    public bool playStart = false;
 
+    public enum Scenes
+    {
+        GameStart,
+        MainMenu,
+        FindMatch,
+        MatchFound
+    }
+    public Scenes currentScene;
 
     // 기본 세팅
     private void Start()
     {
         // 시작버튼 안 눌린 상태
-        startButtonClicked = false;
+        currentScene = Scenes.GameStart;
 
+        #region 카메라 설정
         // 카메라 사용 안함!
         useCamera = false;
-
+        // 카메라 활성화 셋팅
         menuCam.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
+        camHolderPos = playerCam.transform.position;
+        camHolderRot = playerCam.transform.localEulerAngles;
+        #endregion
 
-
+        #region 플레이어 설정
         // 플레이어 위치 초기화
+        ResetPlayer();
+        player.SetActive(false);
+        playerPrefab = player.transform.GetChild(0).gameObject;
+        #endregion
+
+        #region UI 화면 설정
+        // UI 화면들 비활성화
+        preference_UI.SetActive(false);
+        jointhePool_UI.SetActive(false);
+        // 앨범 화면 비활성화
+        lookattheAlbum_UI.SetActive(false);
+        // 시작화면 활성화
+        startGame_UI.SetActive(true);
+        // 메인메뉴 비활성화
+        mainMenu_UI.SetActive(false);
+        #endregion
+    }
+
+    void ResetPlayer()
+    {
         player.transform.position = mainmenuPos.position;
         player.transform.localEulerAngles = new Vector3(0, 180, 0);
-        player.SetActive(false);
-
-
-        // UI 셋팅화면 비활성화
-        preference_Scene.SetActive(false);
-        // 앨범 화면 비활성화
-        lookattheAlbum_Scene.SetActive(false);
-        // 시작화면 활성화
-        startGame_Scene.SetActive(true);
-        // 메인메뉴 비활성화
-        mainMenu_Scene.SetActive(false);
+        player.transform.GetChild(0).localPosition = Vector3.up;
     }
 
     // 1. 시작하기
@@ -122,18 +144,18 @@ public class GameSceneManager : MonoBehaviour
     public void OnStartGameClicked()
     {
         //state = SceneState.mainMenu_State;
-        startButtonClicked = true;
-
-        playStart = false;
+        currentScene = Scenes.MainMenu;
 
         menuCam.gameObject.SetActive(true);
         playerCam.gameObject.SetActive(false);
 
         // 시작화면 비활성화
-        startGame_Scene.SetActive(false);
-        // 메인메뉴 활성화
-        mainMenu_Scene.SetActive(true);
+        startGame_UI.SetActive(false);
 
+        // 메인메뉴 활성화
+        mainMenu_UI.SetActive(true);
+
+        // 플레이어 캐릭터 활성화
         player.SetActive(true);
     }
 
@@ -142,7 +164,8 @@ public class GameSceneManager : MonoBehaviour
     public void OnJointhePoolClicked()
     {
         // 시작!
-        playStart = true;        
+        currentScene = Scenes.FindMatch;
+
         playerCam.gameObject.SetActive(true);
         menuCam.gameObject.SetActive(false);
 
@@ -150,15 +173,16 @@ public class GameSceneManager : MonoBehaviour
         useCamera = true;
 
         // 카메라 홀더 위치조절
-        playerCam.parent = player.transform.GetChild(0).transform;
-        playerCam.localPosition = camHolderPos;
+        playerCam.SetParent(player.transform.GetChild(0).transform);
 
         // 메인메뉴 비활성화
-        mainMenu_Scene.SetActive(false);
+        mainMenu_UI.SetActive(false);
+        jointhePool_UI.SetActive(true);
 
         // 점프
-        print("player jumped");
+        //print("player jumped");
         Rigidbody playerR = player.GetComponent<Rigidbody>();
+        //Rigidbody playerR = player.GetComponentInChildren<Rigidbody>();
         Vector3 jumpIn = (player.transform.forward * -jumpP) + (player.transform.up * jumpP);
         playerR.AddForce(jumpIn, ForceMode.VelocityChange);
     }
@@ -166,20 +190,66 @@ public class GameSceneManager : MonoBehaviour
     // 메인메뉴 -> [Look at the Album] =============== 버튼용 함수
     public void OnLookattheAlbumClicked()
     {
-        lookattheAlbum_Scene.SetActive(true);
-    }
-
-    // 메인메뉴 -> [Preferences] ===================== 버튼용 함수
-    public void OnPreferenceClicked()
-    {
-        preference_Scene.SetActive(true);
+        lookattheAlbum_UI.SetActive(true);
     }
 
     // 메인메뉴 -> [Back to the Game] ================ 버튼용 함수
     public void OnBacktoGameClicked()
     {
-        lookattheAlbum_Scene.SetActive(false);
-        preference_Scene.SetActive(false);
+        lookattheAlbum_UI.SetActive(false);
+        preference_UI.SetActive(false);
+    }
+
+    // 매칭 상황 -> [Escape] ========================= 버튼용 함수
+    public void OnEscapeClicked()
+    {
+        // 카메라 사용 안함!
+        useCamera = false;
+
+        #region 플레이어 설정
+        // 플레이어 초기화
+        Prefab_Float playerPF = player.GetComponent<Prefab_Float>();
+        if (playerPF)
+        {
+            playerPF.EndFloating();
+        }
+        ResetPlayer();
+
+        playerCam.SetParent(null);
+        playerCam.transform.position = camHolderPos;
+        playerCam.transform.localEulerAngles = camHolderRot;
+        #endregion
+
+        #region UI 화면 설정
+        // UI 화면들 비활성화
+        preference_UI.SetActive(false);
+        jointhePool_UI.SetActive(false);
+        // 앨범 화면 비활성화
+        lookattheAlbum_UI.SetActive(false);
+        // 시작화면 활성화
+        startGame_UI.SetActive(true);
+        // 메인메뉴 비활성화
+        mainMenu_UI.SetActive(false);
+        #endregion
+
+        // 플레이어 비활성화
+        player.SetActive(false);
+
+        // 만약 rpc가 있었다면, 없앤다!
+        if (RPCManager.Instance.currentPlayer > 0)
+        {
+            RPCManager.Instance.currentPlayer--;
+        }
+
+        // 시작버튼 초기화
+        currentScene = Scenes.GameStart;
+    }
+
+
+    // 공통 -> [Preferences] ========================= 버튼용 함수
+    public void OnPreferenceClicked()
+    {
+        preference_UI.SetActive(true);
     }
 
 
@@ -220,7 +290,7 @@ public class GameSceneManager : MonoBehaviour
         // 회전각도 갱신
         playerCam.localEulerAngles = new Vector3(rotAngleX, rotAngleY, playerCam.localEulerAngles.z);
     }
-    
+
     // 카메라 뷰 컨트롤 (2)
     void CameraViewControl()
     {

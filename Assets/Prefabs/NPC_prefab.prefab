@@ -201,9 +201,10 @@ GameObject:
   - component: {fileID: 5918357077517224531}
   - component: {fileID: 5188127413683000186}
   - component: {fileID: -8871034806263819664}
-  - component: {fileID: 4609337636704443255}
+  - component: {fileID: -5468754942483434569}
+  - component: {fileID: 1450854805885207448}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: NPC_prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -304,7 +305,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &4609337636704443255
+--- !u!114 &-5468754942483434569
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,12 +314,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 3908299414014348969}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9260556635a514f4f84d194b702aefea, type: 3}
+  m_Script: {fileID: 11500000, guid: eab8177b0bd796d42953802fb80c717e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  moveSpeed: 3.8
-  playType: 2
+  floatingSpeed: 2
+  isFloating: 0
+  playerType: 2
+--- !u!114 &1450854805885207448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908299414014348969}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca9e467964c883408473272418b5292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.5
+  frequency: 1
 --- !u!1 &6245356448713116009
 GameObject:
   m_ObjectHideFlags: 0

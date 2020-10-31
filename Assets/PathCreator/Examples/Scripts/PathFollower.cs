@@ -10,15 +10,11 @@ namespace PathCreation.Examples
         public EndOfPathInstruction endOfPathInstruction;
         public float speed = 4;
         float distanceTravelled;
-
-        public bool delay;
-        public Transform target;
-        public float delayDistance = 2f;
+        bool savePose;
+        Pose pose;
 
         void Start()
         {
-            speed = delay ? speed - 1f : speed;
-
             if (pathCreator != null)
             {
                 // Subscribed to the pathUpdated event so that we're notified if the path changes during the game
@@ -28,21 +24,27 @@ namespace PathCreation.Examples
 
         void Update()
         {
-            if (delay && target != null)
-            {
-                float distance = Vector3.Distance(target.position, transform.position);
-                if(distance > delayDistance)
-                {
-                    speed = distance > delayDistance ? speed + 1 : speed;
-                    delay = false;
-                }
-            }
-
             if (pathCreator != null)
             {
                 distanceTravelled += speed * Time.deltaTime;
                 transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
                 transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+
+                if (!savePose)
+                {
+                    // 초기 위치 저장하기
+                    pose = new Pose(transform.position, transform.rotation);
+                    savePose = true;
+                }
+                else
+                {   // 저장된 위치가 있고, 속도가 0이면, 위치 리셋하기
+                    if (speed == 0)
+                    {
+                        distanceTravelled = 0;
+                        transform.position = pose.position;
+                        transform.rotation = pose.rotation;
+                    }
+                }
             }
         }
 

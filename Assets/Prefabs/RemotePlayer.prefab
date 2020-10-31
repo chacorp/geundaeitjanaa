@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7391303313798511206}
   - component: {fileID: 4662350591119348805}
   - component: {fileID: 3366990885861243356}
+  - component: {fileID: 3697577888115195662}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -82,6 +83,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &3697577888115195662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2484851414892731096}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca9e467964c883408473272418b5292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.5
+  frequency: 1
 --- !u!1 &4822528607433923864
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,9 +200,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 208043765043761244}
-  - component: {fileID: 6650275567060917012}
-  - component: {fileID: 5931639696254602127}
-  - component: {fileID: -972404465258445853}
+  - component: {fileID: 6763740083832768814}
+  - component: {fileID: 4562143428035092732}
+  - component: {fileID: 4088876687394495141}
   m_Layer: 0
   m_Name: RemotePlayer
   m_TagString: Untagged
@@ -210,7 +225,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &6650275567060917012
+--- !u!136 &6763740083832768814
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -220,11 +235,11 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.1
+  m_Radius: 1
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1.1, z: 0}
---- !u!54 &5931639696254602127
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &4562143428035092732
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -240,7 +255,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &-972404465258445853
+--- !u!114 &4088876687394495141
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -249,12 +264,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5629519891890058577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9260556635a514f4f84d194b702aefea, type: 3}
+  m_Script: {fileID: 11500000, guid: eab8177b0bd796d42953802fb80c717e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  moveSpeed: 3.8
-  playType: 1
+  floatingSpeed: 2
+  isFloating: 0
+  playerType: 1
 --- !u!1 &6202965987940172940
 GameObject:
   m_ObjectHideFlags: 0
