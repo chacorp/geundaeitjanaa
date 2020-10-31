@@ -30,161 +30,110 @@ public class GameSceneManager : MonoBehaviour
     }
 
     [Header("메뉴")]
-    public GameObject startPage;
-    public GameObject mainMenu;
+    public GameObject startGame_UI;
+    public GameObject mainMenu_UI;
+    public GameObject preference_UI;
+    public GameObject lookattheAlbum_UI;
+    public GameObject jointhePool_UI;
+    // 버튼
+    public GameObject escape_btn;
 
     [Header("위치")]
     public Transform cameraPos;
     public Transform mainmenuPos;
-    public Transform joinPoolPos;
 
     [Header("플레이어")]
     public GameObject player;
-    public GameObject playerTube;
+    public GameObject playerPrefab;
+    public float jumpP = 5f;
 
     [Header("카메라")]
+    Vector3 camHolderPos;
+    Vector3 camHolderRot;
     public Transform menuCam;
     public Transform playerCam;
-    Vector3 camHolderPos;
     public bool useCamera;
+
     float rotAngleY = 0;
     float rotSpeed = 250f;
     float rotAngleX;
     float camView;
-    int select = 1; // default is 1
+    int scroll = 1; // default is 1
+
+    [Header("진행 단계")]
+    float[] viewArray;
     // perspective
     float[] fovArray = { 8.5f, 20f, 35f };
     // orthographic
     float[] sizeArray = { 1.25f, 3f, 5f };
-    
 
-    [Header("진행 단계")]
-    // 플레이 시작!?
-    public bool playStart = false;
-
-    // 진행단계
-    public enum SceneState
+    // Scene 전환
+    public enum Scenes
     {
-        open_State,         // 시작하기
-        mainMenu_State,     // 메인 메뉴
-        joinMatch_State,    // 매칭 풀장 들어가기
-        matchFound_State,   // 매칭 완료
-        endMatch_State      // 매칭 끝내기
+        GameStart,
+        MainMenu,
+        FindMatch,
+        MatchFound
     }
-    public SceneState state;
+    public Scenes currentScene;
 
-
-    // 기본 세팅
+    // 기본 시작 세팅
     private void Start()
     {
+        // 시작버튼 안 눌린 상태
+        currentScene = Scenes.GameStart;
+
+        #region 카메라 설정
         // 카메라 사용 안함!
         useCamera = false;
-
+        // 카메라 활성화 셋팅
         menuCam.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
+        camHolderPos = playerCam.transform.position;
+        camHolderRot = playerCam.transform.localEulerAngles;
+        #endregion
 
-        // 진행 단계 => 시작하기
-        state = SceneState.open_State;
-
-        // 플레이어 위치 초기화
-        player.transform.position = mainmenuPos.position;
-        player.transform.localEulerAngles = new Vector3(0, 180, 0);
-    }
-
-    // 1. 시작하기
-    void OpenState()
-    {
+        #region UI 화면 설정
+        // UI 화면들 비활성화
+        preference_UI.SetActive(false);
+        jointhePool_UI.SetActive(false);
+        // 앨범 화면 비활성화
+        lookattheAlbum_UI.SetActive(false);
         // 시작화면 활성화
-        startPage.SetActive(true);
-
+        startGame_UI.SetActive(true);
         // 메인메뉴 비활성화
-        mainMenu.SetActive(false);
+        mainMenu_UI.SetActive(false);
+        #endregion
 
-        // 화면 돌리기 비활성화
-        useCamera = false;
-    }
-
-    // 2. 메인 메뉴
-    void MainMenuState()
-    {
-        playStart = false;
-
-        menuCam.gameObject.SetActive(true);
-        playerCam.gameObject.SetActive(false);
-
-
-        // 시작화면 비활성화
-        startPage.SetActive(false);
-        // 메인메뉴 활성화
-        mainMenu.SetActive(true);
-    }
-
-    // 3. 매칭 풀장 들어가기
-    void JoinMatchState()
-    {
-        // 카메라 홀더 위치조절
-        playerCam.parent = player.transform.GetChild(0).transform;
-        playerCam.localPosition = camHolderPos;
-
-        // 카메라 사용함!
-        useCamera = true;
-
-        // 메인메뉴 비활성화
-        mainMenu.SetActive(false);
-
-        // 플레이어 튜브 켜두기
-        playerTube.SetActive(true);
-    }
-
-    // 4. 다른 플레이어와 매칭 성공
-    void MatchFoundState()
-    {
-
+        #region 플레이어 설정
+        // 플레이어 위치 초기화
+        ResetPlayer();
+        player.SetActive(false);
+        playerPrefab = player.transform.GetChild(0).gameObject;
+        #endregion
     }
 
 
-    // 시작화면 -> [StartGame] 버튼용 함수
-    public void OnGameOpen()
-    {
-        state = SceneState.mainMenu_State;
-    }
-
-    // 메인메뉴 -> [Join_the_Pool] 버튼용 함수
-    public void OnGameJoin()
-    {
-        state = SceneState.joinMatch_State;
-
-        // 시작!
-        playStart = true;        
-        playerCam.gameObject.SetActive(true);
-        menuCam.gameObject.SetActive(false);
-
-        // 점프
-        print("jump");
-        Rigidbody playerR = player.GetComponent<Rigidbody>();
-        Vector3 jumpIn = (player.transform.forward * 100) + (player.transform.up * 100);
-        playerR.AddForce(jumpIn);
-    }
-
+    #region 마우스 컨트롤 및 기초 설정
     // 마우스 스크롤링
     int ScrollDirection()
     {
         float direction = Input.GetAxis("Mouse ScrollWheel");
         if (direction > 0)
         {
-            select--;
+            scroll--;
         }
         else if (direction < 0)
         {
-            select++;
+            scroll++;
         }
         // 선택범위 클램프
-        select = Mathf.Clamp(select, 0, fovArray.Length - 1);
+        scroll = Mathf.Clamp(scroll, 0, fovArray.Length - 1);
 
-        return select;
+        return scroll;
     }
 
-    // 카메라 회전 컨트롤 (1)
+    // 카메라 회전 컨트롤
     void CameraRotateControl()
     {
         // 마우스 값 가져오기
@@ -197,28 +146,30 @@ public class GameSceneManager : MonoBehaviour
         // 각도 클립핑
         // 이미 30도에서 시작하기 때문에 각도를 0 ~ 90으로 하고 싶다면 -30한 -30 ~ 60으로 해줘야함
         rotAngleY = rotAngleY > 360 ? 0 : rotAngleY;
-        rotAngleX = Mathf.Clamp(rotAngleX, -10, 60);
+        rotAngleX = Mathf.Clamp(rotAngleX, -15, 60);
 
         // 회전각도 갱신
         playerCam.localEulerAngles = new Vector3(rotAngleX, rotAngleY, playerCam.localEulerAngles.z);
     }
-    
-    // 카메라 뷰 컨트롤 (2)
+
+    // 카메라 뷰 컨트롤
     void CameraViewControl()
     {
-        // 카메라 시점 받아오기
+        // 카메라 시점
         camView = Camera.main.orthographic ? Camera.main.orthographicSize : Camera.main.fieldOfView;
+        // 카메라 시야
+        viewArray = Camera.main.orthographic ? sizeArray : fovArray;
 
-        // 적용
-        float[] viewArray = Camera.main.orthographic ? sizeArray : fovArray;
+        // 값 바꿔주기
         camView = Mathf.Lerp(camView, viewArray[ScrollDirection()], Time.deltaTime);
 
-        // Lerp 끝단 수렴하게 해주기
-        if (camView >= viewArray[select] - 0.05f && camView <= viewArray[select] + .05f)
+        // Lerp 끝단에서 수렴하게 해주기
+        if (camView >= viewArray[scroll] - 0.05f && camView <= viewArray[scroll] + .05f)
         {
-            camView = viewArray[select];
+            camView = viewArray[scroll];
         }
 
+        // 바뀐 값 적용해주기
         if (Camera.main.orthographic)
         {
             Camera.main.orthographicSize = camView;
@@ -229,45 +180,194 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
+    // 플레이어 리셋하기
+    void ResetPlayer()
+    {
+        player.transform.position = mainmenuPos.position;
+        player.transform.localEulerAngles = new Vector3(0, 180, 0);
+        player.transform.GetChild(0).localPosition = Vector3.up;
+    }
+    #endregion
+
+    #region 시작화면
+    //======================================================================================
+    // [StartGame] << 버튼 
+    public void OnStartGameClicked()
+    {
+        // Scene 전환하기
+        currentScene = Scenes.MainMenu;
+
+        #region 카메라 설정
+        menuCam.gameObject.SetActive(true);
+        playerCam.gameObject.SetActive(false);
+        #endregion
+
+        #region UI 활성화
+        // 시작화면 비활성화
+        startGame_UI.SetActive(false);
+        // 메인메뉴 활성화
+        mainMenu_UI.SetActive(true);
+        #endregion
+
+        // 플레이어 캐릭터 활성화
+        player.SetActive(true);
+    }
+    //======================================================================================
+    #endregion
+
+    #region 메인메뉴
+    //======================================================================================
+    // [Join_the_Pool] << 버튼
+    public void OnJointhePoolClicked()
+    {
+        // Scene 전환하기
+        currentScene = Scenes.FindMatch;
+
+        #region 카메라 설정
+        // 활성화할 카메라 선택
+        playerCam.gameObject.SetActive(true);
+        menuCam.gameObject.SetActive(false);
+
+        // 카메라 사용함!
+        useCamera = true;
+
+        // 카메라 홀더 위치조절
+        playerCam.SetParent(player.transform.GetChild(0).transform);
+        playerCam.localEulerAngles = new Vector3(0, 180, 0);
+        rotAngleX = playerCam.localEulerAngles.x;
+        rotAngleY = playerCam.localEulerAngles.y;
+        #endregion
+
+        #region UI 활성화
+        // 메인메뉴 비활성화
+        mainMenu_UI.SetActive(false);
+        jointhePool_UI.SetActive(true);
+        #endregion
+
+        #region 플레이어 캐릭터 점프!!
+        Rigidbody playerR = player.GetComponent<Rigidbody>();
+        //Rigidbody playerR = player.GetComponentInChildren<Rigidbody>();
+        Vector3 jumpIn = (player.transform.forward * -jumpP) + (player.transform.up * jumpP);
+        playerR.AddForce(jumpIn, ForceMode.VelocityChange);
+        #endregion
+    }
+
+    // [Look at the Album] << 버튼
+    public void OnLookattheAlbumClicked()
+    {
+        lookattheAlbum_UI.SetActive(true);
+    }
+
+    // [Back to the Game] << 버튼
+    public void OnBacktoGameClicked()
+    {
+        lookattheAlbum_UI.SetActive(false);
+        preference_UI.SetActive(false);
+    }
+    //======================================================================================
+    #endregion
+
+    #region 매칭 상대 찾기
+    //======================================================================================
+    // [Escape] << 버튼
+    public void OnEscapeClicked()
+    {
+        #region 플레이어 설정
+        // 플레이어 초기화
+        Prefab_Float playerPF = player.GetComponent<Prefab_Float>();
+        if (playerPF)
+        {
+            playerPF.EndFloating();
+        }
+        ResetPlayer();
+
+        // 플레이어 비활성화
+        player.SetActive(false);
+
+        #endregion
+
+        #region UI 화면 설정
+        // UI 화면들 비활성화
+        preference_UI.SetActive(false);
+        jointhePool_UI.SetActive(false);
+        // 앨범 화면 비활성화
+        lookattheAlbum_UI.SetActive(false);
+        // 시작화면 활성화
+        startGame_UI.SetActive(true);
+        // 메인메뉴 비활성화
+        mainMenu_UI.SetActive(false);
+        #endregion
+
+        #region 카메라 위치 리셋 및 viewport 리셋
+        // 카메라 사용 안함!
+        useCamera = false;
+
+        // 카메라 위치 리셋
+        playerCam.SetParent(null);
+        playerCam.transform.position = camHolderPos;
+        playerCam.transform.localEulerAngles = camHolderRot;
+
+        // 카메라 시점
+        camView = Camera.main.orthographic ? Camera.main.orthographicSize : Camera.main.fieldOfView;
+        // 카메라 시야
+        viewArray = Camera.main.orthographic ? sizeArray : fovArray;
+        // 스크롤 디폴트로 바꾸기
+        scroll = 1;
+        // 값 바꿔주기
+        camView = viewArray[scroll];
+
+        // 바꾼 값 적용하기
+        if (Camera.main.orthographic)
+        {
+            Camera.main.orthographicSize = camView;
+        }
+        else
+        {
+            Camera.main.fieldOfView = camView;
+        }
+        #endregion
+
+        // 만약 rpc가 있었다면, 없앤다!
+        if (RPCManager.Instance.currentPlayer > 0)
+        {
+            RPCManager.Instance.currentPlayer--;
+        }
+
+        // 시작버튼 초기화
+        currentScene = Scenes.GameStart;
+    }
+    //======================================================================================
+    #endregion
+
+    #region 전체 공통
+    //======================================================================================
+    // [Preferences] << 버튼
+    public void OnPreferenceClicked()
+    {
+        preference_UI.SetActive(true);
+    }
+    //======================================================================================
+    #endregion
+
+
 
     private void Update()
     {
         // 카메라 사용여부 확인하기
         if (useCamera)
         {
-            CameraRotateControl();
             CameraViewControl();
+            if (Input.GetMouseButton(1)) CameraRotateControl();
         }
 
-        // 진행단계에 따라 전환하기
-        switch (state)
+        // 매칭 대기 <-> 매칭 완료 상황 별 [Escape] 버튼 조정하기 !!!
+        if (currentScene == Scenes.MatchFound)
         {
-            // 처음 시작할 때
-            case SceneState.open_State:
-                OpenState();
-                break;
-
-            // 메인메뉴 들어갈 때
-            case SceneState.mainMenu_State:
-                MainMenuState();
-                break;
-
-            // 풀장에 들어갈 때 => 매칭시작
-            case SceneState.joinMatch_State:
-                JoinMatchState();
-                break;
-
-            // 매칭 되었을 때
-            case SceneState.matchFound_State:
-                MatchFoundState();
-                break;
-
-            case SceneState.endMatch_State:
-                break;
-
-            // 그냥 디폴트(암것도 안함)
-            default:
-                break;
+            escape_btn.SetActive(false);
+        }
+        if (currentScene == Scenes.FindMatch)
+        {
+            escape_btn.SetActive(true);
         }
     }
 }

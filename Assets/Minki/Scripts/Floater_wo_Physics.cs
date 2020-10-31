@@ -16,7 +16,7 @@ public class Floater_wo_Physics : MonoBehaviour
     void Start()
     {
         // Store the starting position & rotation of the object
-        posOffset = transform.position;
+        posOffset = transform.localPosition;
     }
 
     // Update is called once per frame
@@ -26,6 +26,6 @@ public class Floater_wo_Physics : MonoBehaviour
         tempPos = posOffset;
         tempPos.y += Mathf.Sin(Time.fixedTime * Mathf.PI * frequency) * amplitude;
 
-        transform.position = tempPos;
+        transform.localPosition = new Vector3(transform.localPosition.x , tempPos.y, transform.localPosition.z);
     }
 }
