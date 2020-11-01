@@ -32,6 +32,15 @@ public class RPCManager : MonoBehaviour
     // 따라갈 녀석
     Transform follower;
 
+    enum npc_State
+    {
+        None,
+        GetCloser,
+        Stay,
+        GetAway
+    }
+    npc_State npc_A;
+
     bool isApproaching = false;
     float approachingSpeed = 1.5f;
 
@@ -56,10 +65,13 @@ public class RPCManager : MonoBehaviour
         // 오브젝트 가져오기
         playerObj = GameSceneManager.Instance.player.transform;
         follower = GameObject.FindGameObjectWithTag("Respawn").transform;
+
+
+        npc_State npc_A = npc_State.None;
     }
 
     // 플레이어에게 접근하기!!
-    void GetApproach()
+    void Approach()
     {
         // rpc 하나 가져오기
         GameObject rpc = RPC_activeTrue[0];
@@ -74,8 +86,36 @@ public class RPCManager : MonoBehaviour
         else
         {
             rpc.transform.SetParent(follower);
-            // 접근하기 취소
-            isApproaching = false;
+            // 그만 접근하기
+            npc_A = npc_State.Stay;
+        }
+    }
+
+    void RunAway()
+    {
+        // rpc 하나 가져오기
+        GameObject rpc = RPC_activeTrue[0];
+        // 탈출 포인트 가져오기
+        Transform leavePoint = follower.GetChild(1);
+
+        // 타겟과의 거리가 일정 거리 이상이면 접근하고, 일정 거리 미만이면 비활성화하기
+        float distance = Vector3.Distance(leavePoint.position, rpc.transform.position);
+        if (distance >= 1f)
+        {
+            rpc.transform.position = Vector3.Lerp(rpc.transform.position, leavePoint.position, approachingSpeed * Time.deltaTime);
+        }
+        else
+        {
+            RPC_activeTrue.Remove(rpc);
+            RPC_activeFalse.Add(rpc);
+
+            Prefab_Float rpcPF = rpc.GetComponentInChildren<Prefab_Float>();
+            rpcPF.EndFloating();
+            rpc.transform.SetParent(null);
+            rpc.SetActive(false);
+
+            // 그만 접근하기
+            npc_A = npc_State.None;
         }
     }
 
@@ -119,23 +159,16 @@ public class RPCManager : MonoBehaviour
 
                 // 활성화 
                 rpc.SetActive(true);
-                isApproaching = true;
+
+                // 상태 전환하기
+                npc_A = npc_State.GetCloser;
             }
 
             // 다른 플레이어가 빠져나갔을때
             if (currentPlayer < previousPlayer)
             {
                 // 플레이어에게 접근 취소
-                isApproaching = false;
-
-                GameObject rpc = RPC_activeTrue[0];
-                RPC_activeTrue.Remove(rpc);
-                RPC_activeFalse.Add(rpc);
-
-                Prefab_Float rpcPF = rpc.GetComponentInChildren<Prefab_Float>();
-                rpcPF.EndFloating();
-                rpc.transform.SetParent(null);
-                rpc.SetActive(false);
+                npc_A = npc_State.GetAway;
             }
 
             // 이전 플레이어 수 동기화
@@ -143,6 +176,15 @@ public class RPCManager : MonoBehaviour
         }
 
         // RPC를 플레이어에게 접근시키기
-        if (isApproaching) GetApproach();
+        switch (npc_A)
+        {
+            case npc_State.GetCloser:
+                Approach();
+                break;
+
+            case npc_State.GetAway:
+                RunAway();
+                break;
+        }
     }
 }
