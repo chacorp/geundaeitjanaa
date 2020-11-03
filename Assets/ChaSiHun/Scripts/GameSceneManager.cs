@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 // 1. 시작화면
 //    -> 버튼 (메인메뉴)
@@ -35,7 +34,6 @@ public class GameSceneManager : MonoBehaviour
     public GameObject mainMenu_UI;
     public GameObject preference_UI;
     public GameObject lookattheAlbum_UI;
-    public GameObject photoShot_UI;
     public GameObject jointhePool_UI;
     // 버튼
     public GameObject escape_btn;
@@ -54,7 +52,7 @@ public class GameSceneManager : MonoBehaviour
     Vector3 camHolderRot;
     public Transform menuCam;
     public Transform playerCam;
-    public bool useCamera { get; private set; }
+    public bool useCamera;
 
     float rotAngleY = 0;
     float rotSpeed = 250f;
@@ -99,7 +97,6 @@ public class GameSceneManager : MonoBehaviour
         // UI 화면들 비활성화
         preference_UI.SetActive(false);
         jointhePool_UI.SetActive(false);
-        photoShot_UI.SetActive(false);
         // 앨범 화면 비활성화
         lookattheAlbum_UI.SetActive(false);
         // 시작화면 활성화
@@ -339,35 +336,6 @@ public class GameSceneManager : MonoBehaviour
         // 시작버튼 초기화
         currentScene = Scenes.GameStart;
     }
-
-    public void ShowPhoto(Sprite input)
-    {
-        Image cap_img = photoShot_UI.transform.GetChild(0).gameObject.GetComponent<Image>();
-        cap_img.sprite = input;
-
-        // 사진 캡쳐 UI가 비활성화 되어있다면, 활성화하기
-        if (!photoShot_UI.activeSelf && cap_img.sprite != null)
-        {
-            photoShot_UI.SetActive(true);
-        }
-    }
-
-    public void Take_A_Photo()
-    {
-        // 반복 안 하게 enum 바꿔주기
-        RPCManager.Instance.npc_A = RPCManager.npc_State.None;
-
-        // 스크린샷!
-        // ScreenCapture.CaptureScreenshot($"CapturedPhoto{n_Photos++}.png");
-        ScreenShot.Instance.CaptureScreen();
-    }
-
-    // [ X ] << 버튼
-    public void OnClosePhotoShot()
-    {
-        RPCManager.Instance.npc_A = RPCManager.npc_State.GetAway;        
-        photoShot_UI.SetActive(false);
-    }
     //======================================================================================
     #endregion
 
@@ -389,25 +357,7 @@ public class GameSceneManager : MonoBehaviour
         if (useCamera)
         {
             CameraViewControl();
-            if (Input.GetMouseButton(1)) 
-                CameraRotateControl();
-        }
-
-        // 시작했을 때만 입력받기
-        if (currentScene == Scenes.FindMatch)
-        {
-            // currentRPC = 참여하고 있는 플레이어 수 가져오기
-            if (Input.GetKeyDown(KeyCode.A) && RPCManager.Instance.currentPlayer < RPCManager.Instance.MaxRPCs)
-            {
-                RPCManager.Instance.currentPlayer++;
-            }
-        }
-       else if (currentScene == Scenes.MatchFound)
-        {
-            if (Input.GetKeyDown(KeyCode.D) && RPCManager.Instance.currentPlayer > 0)
-            {
-                RPCManager.Instance.currentPlayer--;
-            }
+            if (Input.GetMouseButton(1)) CameraRotateControl();
         }
 
         // 매칭 대기 <-> 매칭 완료 상황 별 [Escape] 버튼 조정하기 !!!
@@ -415,7 +365,7 @@ public class GameSceneManager : MonoBehaviour
         {
             escape_btn.SetActive(false);
         }
-       else if (currentScene == Scenes.FindMatch)
+        if (currentScene == Scenes.FindMatch)
         {
             escape_btn.SetActive(true);
         }
