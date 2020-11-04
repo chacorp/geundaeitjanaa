@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class ScreenShot : MonoBehaviour
 {
@@ -9,6 +9,8 @@ public class ScreenShot : MonoBehaviour
     {
         Instance = this;
     }
+
+    static string directoryName = "Album";
 
     // 게임화면(3D)을 보여주는 카메라
     Camera mainCam;
@@ -29,8 +31,11 @@ public class ScreenShot : MonoBehaviour
 
     public bool nowCapturing { get; private set; }
 
+    // 스크린 캡쳐하기
     public void CaptureScreen()
     {
+        VerifyDirectory();
+
         // 동기화 플래그 설정
         nowCapturing = true;
 
@@ -38,9 +43,9 @@ public class ScreenShot : MonoBehaviour
         StartCoroutine(RenderToTexture(Screen.width, Screen.height));
     }
 
+    // 텍스쳐로 렌더하기
     private IEnumerator RenderToTexture(int r_width, int r_height)
     {
-
         // 캡처는 WaitForEndOfFrame 이후에 해야 한다!
         // 그렇지 않으면 다 출력 되지 않은 상태의 화면을 보게 된다!
         yield return new WaitForEndOfFrame();
@@ -75,7 +80,7 @@ public class ScreenShot : MonoBehaviour
 
         // File로 쓰고 싶다면 아래처럼 하면 됩니다.
         byte[] bytes = screenShot.EncodeToPNG();
-        System.IO.File.WriteAllBytes(Application.dataPath + $"/../captured_{saved_Photos}.png", bytes);
+        File.WriteAllBytes(GetDirPath() + $"/../captured_{saved_Photos}.png", bytes);
 
         // 사진 갯수 누적!
         PlayerPrefs.SetInt("photoNum", ++saved_Photos);
@@ -91,4 +96,25 @@ public class ScreenShot : MonoBehaviour
 
         yield return 0;
     }
+
+
+
+    #region Operations
+    static void VerifyDirectory()
+    {
+        string dir = GetDirPath();
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+    }
+    #endregion
+
+
+    #region 폴더 경로 가져오기
+    static string GetDirPath()
+    {
+        return Application.dataPath + "/" + directoryName;
+    }
+    #endregion
 }
