@@ -10,18 +10,21 @@ public class ScreenShot : MonoBehaviour
         Instance = this;
     }
 
+    // 스크린 샷 저장할 경로
     static string directoryName = "Album";
 
-    // 게임화면(3D)을 보여주는 카메라
-    Camera mainCam;
-
-    // 지난 게임부터 현재까지 모든 게임에서 얻은 사진
-    int saved_Photos = 0;
+    // 가장 마지막에 찍은 스크린 샷
+    public Sprite recentPhoto { get; private set; }
 
     // 현재 게임에서 얻은 사진
     public int current_Photos { get; private set; }
 
-    public Sprite recentPhoto;// { get; private set; }
+    // 지난 게임부터 현재까지 모든 게임에서 얻은 사진
+    int saved_Photos = 0;
+
+    // 게임화면(3D)을 보여주는 카메라
+    Camera mainCam;
+
 
     private void Awake()
     {
@@ -80,7 +83,7 @@ public class ScreenShot : MonoBehaviour
 
         // File로 쓰고 싶다면 아래처럼 하면 됩니다.
         byte[] bytes = screenShot.EncodeToPNG();
-        File.WriteAllBytes(GetDirPath() + $"/../captured_{saved_Photos}.png", bytes);
+        File.WriteAllBytes(GetDirPath() + $"/captured_{saved_Photos}.png", bytes);
 
         // 사진 갯수 누적!
         PlayerPrefs.SetInt("photoNum", ++saved_Photos);
@@ -99,7 +102,7 @@ public class ScreenShot : MonoBehaviour
 
 
 
-    #region Operations
+    #region 폴더 경로 가져오기
     static void VerifyDirectory()
     {
         string dir = GetDirPath();
@@ -108,10 +111,7 @@ public class ScreenShot : MonoBehaviour
             Directory.CreateDirectory(dir);
         }
     }
-    #endregion
 
-
-    #region 폴더 경로 가져오기
     static string GetDirPath()
     {
         return Application.dataPath + "/" + directoryName;
