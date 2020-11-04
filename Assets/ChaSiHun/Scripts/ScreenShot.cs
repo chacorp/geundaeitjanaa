@@ -12,14 +12,18 @@ public class ScreenShot : MonoBehaviour
 
     // 게임화면(3D)을 보여주는 카메라
     Camera mainCam;
-    int n_Photos = 0;
+
+    // 지난 게임부터 현재까지 모든 게임에서 얻은 사진
     int saved_Photos = 0;
-    string keyString = "photoNum";
+
+    // 현재 게임에서 얻은 사진
+    public int current_Photos { get; private set; }
+
     public Sprite recentPhoto;// { get; private set; }
 
     private void Awake()
     {
-        saved_Photos = PlayerPrefs.GetInt(keyString, 0);
+        saved_Photos = PlayerPrefs.GetInt("photoNum", 0);
         mainCam = Camera.main;
     }
 
@@ -36,6 +40,7 @@ public class ScreenShot : MonoBehaviour
 
     private IEnumerator RenderToTexture(int r_width, int r_height)
     {
+
         // 캡처는 WaitForEndOfFrame 이후에 해야 한다!
         // 그렇지 않으면 다 출력 되지 않은 상태의 화면을 보게 된다!
         yield return new WaitForEndOfFrame();
@@ -70,8 +75,11 @@ public class ScreenShot : MonoBehaviour
 
         // File로 쓰고 싶다면 아래처럼 하면 됩니다.
         byte[] bytes = screenShot.EncodeToPNG();
-        System.IO.File.WriteAllBytes($"captured_{saved_Photos}.png", bytes);
-        n_Photos++;
+        System.IO.File.WriteAllBytes(Application.dataPath + $"/../captured_{saved_Photos}.png", bytes);
+
+        // 사진 갯수 누적!
+        PlayerPrefs.SetInt("photoNum", ++saved_Photos);
+        current_Photos++;
 
         // 사용한 것들 해제
         RenderTexture.active = null;
@@ -82,13 +90,5 @@ public class ScreenShot : MonoBehaviour
         nowCapturing = false;
 
         yield return 0;
-    }
-
-    private void Update()
-    {
-        if(n_Photos > saved_Photos)
-        {
-            PlayerPrefs.SetInt(keyString, n_Photos);
-        }
     }
 }

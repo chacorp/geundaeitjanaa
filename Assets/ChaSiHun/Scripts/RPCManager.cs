@@ -31,7 +31,7 @@ public class RPCManager : MonoBehaviour
     // 따라갈 녀석
     Transform follower;
 
-    public enum npc_State
+    public enum rpc_State
     {
         None,
         GetCloser,
@@ -39,7 +39,7 @@ public class RPCManager : MonoBehaviour
         TakePhoto,
         GetAway
     }
-    public npc_State npc_A;
+    public rpc_State rpc_A;
 
     float approachSpeed = 1.5f;
 
@@ -63,7 +63,7 @@ public class RPCManager : MonoBehaviour
         follower = GameObject.FindGameObjectWithTag("Respawn").transform;
 
 
-        npc_A = npc_State.None;
+        rpc_A = rpc_State.None;
     }
 
     // 플레이어에게 접근하기!!
@@ -80,7 +80,7 @@ public class RPCManager : MonoBehaviour
         {
             rpc.transform.SetParent(follower);
             // 그만 접근하기
-            npc_A = npc_State.Stay;
+            rpc_A = rpc_State.Stay;
             GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.MatchFound;
         }
     }
@@ -105,7 +105,7 @@ public class RPCManager : MonoBehaviour
             rpc.SetActive(false);
 
             // 그만 접근하기
-            npc_A = npc_State.None;
+            rpc_A = rpc_State.None;
             GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.FindMatch;
         }
     }
@@ -128,14 +128,14 @@ public class RPCManager : MonoBehaviour
                 rpc.SetActive(true);
 
                 // 상태 전환하기
-                npc_A = npc_State.GetCloser;
+                rpc_A = rpc_State.GetCloser;
             }
 
             // 다른 플레이어가 빠져나갔을때
             if (currentPlayer < previousPlayer)
             {
                 // 플레이어에게 접근 취소
-                npc_A = npc_State.TakePhoto;
+                rpc_A = rpc_State.TakePhoto;
             }
 
             // 이전 플레이어 수 동기화
@@ -143,17 +143,20 @@ public class RPCManager : MonoBehaviour
         }
 
         // RPC를 플레이어에게 접근시키기
-        switch (npc_A)
+        switch (rpc_A)
         {
-            case npc_State.GetCloser:
+            case rpc_State.GetCloser:
                 Approach();
                 break;
 
-            case npc_State.TakePhoto:
+            case rpc_State.TakePhoto:
                 GameSceneManager.Instance.Take_A_Photo();
+
+                // 반복 안 하게 enum 바꿔주기
+                rpc_A = rpc_State.None;
                 break;
 
-            case npc_State.GetAway:
+            case rpc_State.GetAway:
                 RunAway();
                 break;
         }

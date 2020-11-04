@@ -270,8 +270,14 @@ public class GameSceneManager : MonoBehaviour
     //======================================================================================
     #endregion
 
-    #region 매칭 상대 찾기
+    #region 매칭 상대 찾기 
     //======================================================================================
+
+    void FlashBack()
+    {
+
+    }
+
     // [Escape] << 버튼
     public void OnEscapeClicked()
     {
@@ -336,8 +342,11 @@ public class GameSceneManager : MonoBehaviour
             RPCManager.Instance.currentPlayer--;
         }
 
-        // 시작버튼 초기화
+        // 시작화면으로 초기화
         currentScene = Scenes.GameStart;
+
+        // 주마등
+        FlashBack();
     }
 
     public void ShowPhoto(Sprite input)
@@ -354,9 +363,6 @@ public class GameSceneManager : MonoBehaviour
 
     public void Take_A_Photo()
     {
-        // 반복 안 하게 enum 바꿔주기
-        RPCManager.Instance.npc_A = RPCManager.npc_State.None;
-
         // 스크린샷!
         // ScreenCapture.CaptureScreenshot($"CapturedPhoto{n_Photos++}.png");
         ScreenShot.Instance.CaptureScreen();
@@ -365,10 +371,23 @@ public class GameSceneManager : MonoBehaviour
     // [ X ] << 버튼
     public void OnClosePhotoShot()
     {
-        RPCManager.Instance.npc_A = RPCManager.npc_State.GetAway;        
+        RPCManager.Instance.rpc_A = RPCManager.rpc_State.GetAway;
         photoShot_UI.SetActive(false);
     }
     //======================================================================================
+    #endregion
+
+    #region 대화시작
+
+    void FirstImpression()
+    {
+
+    }
+
+    void KeepTalking()
+    {
+
+    }
     #endregion
 
     #region 전체 공통
@@ -389,7 +408,7 @@ public class GameSceneManager : MonoBehaviour
         if (useCamera)
         {
             CameraViewControl();
-            if (Input.GetMouseButton(1)) 
+            if (Input.GetMouseButton(1))
                 CameraRotateControl();
         }
 
@@ -402,8 +421,10 @@ public class GameSceneManager : MonoBehaviour
                 RPCManager.Instance.currentPlayer++;
             }
         }
-       else if (currentScene == Scenes.MatchFound)
+        else if (currentScene == Scenes.MatchFound)
         {
+            FirstImpression();
+
             if (Input.GetKeyDown(KeyCode.D) && RPCManager.Instance.currentPlayer > 0)
             {
                 RPCManager.Instance.currentPlayer--;
@@ -415,7 +436,7 @@ public class GameSceneManager : MonoBehaviour
         {
             escape_btn.SetActive(false);
         }
-       else if (currentScene == Scenes.FindMatch)
+        else if (currentScene == Scenes.FindMatch)
         {
             escape_btn.SetActive(true);
         }
