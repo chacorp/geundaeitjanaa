@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
 public class ScreenShot : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class ScreenShot : MonoBehaviour
     // 스크린 샷 저장할 경로
     static string directoryName = "Album";
 
-    // 가장 마지막에 찍은 스크린 샷
-    public Sprite recentPhoto { get; private set; }
+    // 이번 게임에서 캡쳐한 스크린 샷들
+    public List<Sprite> recentPhoto = new List<Sprite>();// { get; private set; }
 
     // 현재 게임에서 얻은 사진
     public int current_Photos { get; private set; }
@@ -30,6 +31,7 @@ public class ScreenShot : MonoBehaviour
     {
         saved_Photos = PlayerPrefs.GetInt("photoNum", 0);
         mainCam = Camera.main;
+        //recentPhoto = new List<Sprite>();
     }
 
     public bool nowCapturing { get; private set; }
@@ -43,12 +45,16 @@ public class ScreenShot : MonoBehaviour
         nowCapturing = true;
 
         // 화면 캡쳐를 위한 코루틴 시작
-        StartCoroutine(RenderToTexture(Screen.width, Screen.height));
+        StartCoroutine(RenderToTexture());
     }
 
     // 텍스쳐로 렌더하기
-    private IEnumerator RenderToTexture(int r_width, int r_height)
+    private IEnumerator RenderToTexture()
     {
+        int r_width = Screen.width;
+        int r_height = Screen.height;
+        Rect renderRect = new Rect(0, 0, r_width, r_height);
+
         // 캡처는 WaitForEndOfFrame 이후에 해야 한다!
         // 그렇지 않으면 다 출력 되지 않은 상태의 화면을 보게 된다!
         yield return new WaitForEndOfFrame();
@@ -57,7 +63,7 @@ public class ScreenShot : MonoBehaviour
         RenderTexture rt = new RenderTexture(r_width, r_height, 24);
 
         //RenderTexture 저장을 위한 Texture2D 생성
-        Texture2D screenShot = new Texture2D(r_width, r_height);//, TextureFormat.ARGB32, false);
+        Texture2D screenShot = new Texture2D(r_width, r_height);
 
         // 카메라에 RenderTexture 할당
         mainCam.targetTexture = rt;
@@ -69,17 +75,15 @@ public class ScreenShot : MonoBehaviour
         RenderTexture.active = rt;
 
         // RenderTexture.active에 설정된 RenderTexture를 read 합니다.
-        screenShot.ReadPixels(new Rect(0, 0, r_width, r_height), 0, 0);
+        screenShot.ReadPixels(renderRect, 0, 0);
         screenShot.Apply();
 
         // 캡쳐가 완료 되었습니다.
         // 이제 캡쳐된 Texture2D 를 가지고 원하는 행동을 하면 됩니다.
-        recentPhoto = Sprite.Create(screenShot,
-                                    new Rect(0, 0, r_width, r_height),
-                                    new Vector2(0.5f, 0.5f)
-                                    );
+        recentPhoto.Add(Sprite.Create(screenShot, renderRect, new Vector2(0.5f, 0.5f)));
 
-        GameSceneManager.Instance.ShowPhoto(recentPhoto);
+        // 가장 마지막 sprite를 넣어두기
+        GameSceneManager.Instance.ShowPhoto(recentPhoto[recentPhoto.Count - 1]);
 
         // File로 쓰고 싶다면 아래처럼 하면 됩니다.
         byte[] bytes = screenShot.EncodeToPNG();
