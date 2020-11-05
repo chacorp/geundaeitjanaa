@@ -26,12 +26,15 @@ public class ScreenShot : MonoBehaviour
     // 게임화면(3D)을 보여주는 카메라
     Camera mainCam;
 
+    // 주마등을 위한 함수....!
+    FlashBackManager FBM;
+
 
     private void Awake()
     {
         saved_Photos = PlayerPrefs.GetInt("photoNum", 0);
         mainCam = Camera.main;
-        //recentPhoto = new List<Sprite>();
+        FBM = GetComponent<FlashBackManager>();
     }
 
     public bool nowCapturing { get; private set; }
@@ -48,7 +51,7 @@ public class ScreenShot : MonoBehaviour
         StartCoroutine(RenderToTexture());
     }
 
-    // 텍스쳐로 렌더하기
+    // 화면 캡쳐 시작!
     private IEnumerator RenderToTexture()
     {
         int r_width = Screen.width;
@@ -85,13 +88,16 @@ public class ScreenShot : MonoBehaviour
         // 가장 마지막 sprite를 넣어두기
         GameSceneManager.Instance.ShowPhoto(recentPhoto[recentPhoto.Count - 1]);
 
-        // File로 쓰고 싶다면 아래처럼 하면 됩니다.
+        // 원하는 경로에 png파일로 저장하기
         byte[] bytes = screenShot.EncodeToPNG();
         File.WriteAllBytes(GetDirPath() + $"/captured_{saved_Photos}.png", bytes);
 
         // 사진 갯수 누적!
         PlayerPrefs.SetInt("photoNum", ++saved_Photos);
         current_Photos++;
+
+        // FlashBack에 추가하기
+        FBM.AddMemory(recentPhoto[recentPhoto.Count - 1]);
 
         // 사용한 것들 해제
         RenderTexture.active = null;

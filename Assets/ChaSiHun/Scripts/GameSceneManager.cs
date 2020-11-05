@@ -21,7 +21,6 @@ using UnityEngine.UI;
 
 // 6. 근데있잖아 타임
 
-[RequireComponent(typeof(ScreenShot))]
 [RequireComponent(typeof(FlashBackManager))]
 public class GameSceneManager : MonoBehaviour
 {
@@ -282,11 +281,6 @@ public class GameSceneManager : MonoBehaviour
     #region 매칭 상대 찾기 
     //======================================================================================
 
-    void FlashBack()
-    {
-
-    }
-
     // [Escape] << 버튼
     public void OnEscapeClicked()
     {
@@ -351,11 +345,11 @@ public class GameSceneManager : MonoBehaviour
             RPCManager.Instance.currentPlayer--;
         }
 
-        // 시작화면으로 초기화
+        // 시작화면으로 초기화 => 서버 나가기
         currentScene = Scenes.GameStart;
 
         // 주마등
-        FlashBack();
+        FBM.playFlashBack = true;
     }
 
     public void ShowPhoto(Sprite input)
