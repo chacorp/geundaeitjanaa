@@ -13,7 +13,7 @@ public class FlashBackManager : MonoBehaviour
     public List<GameObject> filmShots = new List<GameObject>();
     int limit = 700;
     // 올라가는 속도
-    public float rollUpSpeed = 10f;
+    public float rollUpSpeed = 300f;
 
 
     private void Start()
@@ -44,6 +44,9 @@ public class FlashBackManager : MonoBehaviour
     public void FlashBack()
     {
         flachBack_UI.SetActive(true);
+
+        // 속도 조절
+        rollUpSpeed  = filmShots.Count > 0? rollUpSpeed * filmShots.Count : rollUpSpeed;
 
         filmRoll.anchoredPosition += new Vector2(0, rollUpSpeed * Time.deltaTime);
 
