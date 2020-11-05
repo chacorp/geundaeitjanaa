@@ -33,8 +33,10 @@ public class NPCManager : MonoBehaviour
     {
         // NPC의 자식 오브젝트들 가져오기
         for (int i = 0; i < NPCs.childCount; i++) npcWait.Add(NPCs.GetChild(i));
+
         // 각 위치 저장해두기
         for (int i = 0; i < npcWait.Count; i++) npcPos.Add(npcWait[i].position);
+
         Step = Sequence.jump;
     }
     void NPCJUMP()
@@ -55,6 +57,7 @@ public class NPCManager : MonoBehaviour
                 npcJ_T = npcWait[0];
                 npcJ_R = npcJ_T.GetComponentInChildren<Rigidbody>();
                 npcJ_R.AddForce(transform.forward * JumpP + transform.up * JumpP, ForceMode.VelocityChange);
+
                 // 2. 리스트에서 옮기기
                 npcWait.Remove(npcJ_T);
                 Step = Sequence.delay;
@@ -123,6 +126,7 @@ public class NPCManager : MonoBehaviour
         }
     }
 
+    // 맨 앞에 있는 npc 녀석을 안 보이게 하고, 그 자리에 플레이어를 표시하기 위한 함수
     void NPC_ACTIVE_CONTROLL()
     {
         if ((int)GameSceneManager.Instance.currentScene > 0)

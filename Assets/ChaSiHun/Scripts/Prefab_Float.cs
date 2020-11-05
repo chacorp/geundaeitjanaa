@@ -1,6 +1,4 @@
 ﻿using PathCreation.Examples;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Prefab_Float : MonoBehaviour
@@ -62,6 +60,7 @@ public class Prefab_Float : MonoBehaviour
         }
     }
 
+    // 더 이상 둥둥 뜨게 하지 않는 함수
     public void EndFloating()
     {
         // 비활성화하기
@@ -82,6 +81,8 @@ public class Prefab_Float : MonoBehaviour
         }
     }
 
+
+    // 수영장바닥('Finish'라는 태그가 붙어있음)에 부딪히면 둥둥뜨게 하기
     private void OnCollisionEnter(Collision collision)
     {
         // 물 바닥에 부딪혔을때, <Floater_wo_Physics> 컴포넌트 활성화하기

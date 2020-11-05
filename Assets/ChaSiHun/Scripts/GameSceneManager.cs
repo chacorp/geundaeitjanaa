@@ -21,6 +21,8 @@ using UnityEngine.UI;
 
 // 6. 근데있잖아 타임
 
+[RequireComponent(typeof(ScreenShot))]
+[RequireComponent(typeof(FlashBackManager))]
 public class GameSceneManager : MonoBehaviour
 {
     // Class 싱글톤으로 만들기
@@ -69,6 +71,9 @@ public class GameSceneManager : MonoBehaviour
     // orthographic
     float[] sizeArray = { 1.25f, 3f, 5f };
 
+    [Header("주마등")]
+    FlashBackManager FBM;
+
     // Scene 전환
     public enum Scenes
     {
@@ -113,6 +118,10 @@ public class GameSceneManager : MonoBehaviour
         ResetPlayer();
         player.SetActive(false);
         playerPrefab = player.transform.GetChild(0).gameObject;
+        #endregion
+
+        #region 컴포넌트 가져오기
+        FBM = GetComponent<FlashBackManager>();
         #endregion
     }
 
