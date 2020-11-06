@@ -13,7 +13,7 @@ public class FlashBackManager : MonoBehaviour
     public List<GameObject> filmShots = new List<GameObject>();
     int limit = 700;
     // 올라가는 속도
-    public float rollUpSpeed = 300f;
+    public float rollUpSpeed = 200f;
 
 
     private void Start()
@@ -40,23 +40,36 @@ public class FlashBackManager : MonoBehaviour
         // 리스트에 넣어두기
         filmShots.Add(n_shot);
     }
-
+    float delay;
     public void FlashBack()
     {
         flachBack_UI.SetActive(true);
 
-        // 속도 조절
-        rollUpSpeed  = filmShots.Count > 0? rollUpSpeed * filmShots.Count : rollUpSpeed;
-
-        filmRoll.anchoredPosition += new Vector2(0, rollUpSpeed * Time.deltaTime);
-
-        // 일정 높이 만큼 올라갔다면, 꺼버리기
-        if (filmRoll.anchoredPosition.y > (600 * filmShots.Count) + limit)
+        if (filmShots.Count == 0)
         {
-            playFlashBack = false;
-            filmRoll.anchoredPosition = Vector2.zero;
+            delay += Time.deltaTime;
+            if (delay > 2)
+            {
+                playFlashBack = false;
+                filmRoll.anchoredPosition = Vector2.zero;
 
-            flachBack_UI.SetActive(false);
+                flachBack_UI.SetActive(false);
+                return;
+            }
+        }
+        else
+        {
+            // 속도 조절
+            filmRoll.anchoredPosition += new Vector2(0, rollUpSpeed * Time.deltaTime);
+
+            // 일정 높이 만큼 올라갔다면, 꺼버리기
+            if (filmRoll.anchoredPosition.y > (600 * filmShots.Count) + limit)
+            {
+                playFlashBack = false;
+                filmRoll.anchoredPosition = Vector2.zero;
+
+                flachBack_UI.SetActive(false);
+            }
         }
     }
 

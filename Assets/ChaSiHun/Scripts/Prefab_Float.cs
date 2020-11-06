@@ -47,7 +47,7 @@ public class Prefab_Float : MonoBehaviour
                     //위치 리셋
                     transform.SetParent(follower.transform);
                     //속도 설정
-                    pf.speed = -floatingSpeed;
+                    pf.speed = floatingSpeed;
                     break;
 
                 case Ptype.RPC:

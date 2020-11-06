@@ -46,8 +46,9 @@ public class GameSceneManager : MonoBehaviour
     public Transform mainmenuPos;
 
     [Header("플레이어")]
-    public GameObject player;
     public GameObject playerPrefab;
+    public GameObject player;
+    public GameObject playerModel;
     public float jumpP = 5f;
 
     [Header("카메라")]
@@ -84,7 +85,7 @@ public class GameSceneManager : MonoBehaviour
     public Scenes currentScene;
 
     // 기본 시작 세팅
-    private void Start()
+    private void Awake()
     {
         // 시작버튼 안 눌린 상태
         currentScene = Scenes.GameStart;
@@ -113,7 +114,8 @@ public class GameSceneManager : MonoBehaviour
         #endregion
 
         #region 플레이어 설정
-        // 플레이어 위치 초기화
+        // 플레이어 생성 및 위치 초기화
+        player = Instantiate(playerPrefab);
         ResetPlayer();
         player.SetActive(false);
         playerPrefab = player.transform.GetChild(0).gameObject;
@@ -418,30 +420,26 @@ public class GameSceneManager : MonoBehaviour
         // 시작했을 때만 입력받기
         if (currentScene == Scenes.FindMatch)
         {
-            // currentRPC = 참여하고 있는 플레이어 수 가져오기
-            if (Input.GetKeyDown(KeyCode.A) && RPCManager.Instance.currentPlayer < RPCManager.Instance.MaxRPCs)
+            escape_btn.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.A) && RPCManager.Instance.currentPlayer < RPCManager.Instance.MaxRPCs && RPCManager.Instance.rpc_A == RPCManager.rpc_State.None)
             {
                 RPCManager.Instance.currentPlayer++;
+                currentScene = Scenes.MatchFound;
             }
         }
         else if (currentScene == Scenes.MatchFound)
         {
+            escape_btn.SetActive(false);
+            // 첫 대화 시작하기
             FirstImpression();
 
-            if (Input.GetKeyDown(KeyCode.D) && RPCManager.Instance.currentPlayer > 0)
+            if (Input.GetKeyDown(KeyCode.D) && RPCManager.Instance.currentPlayer > 0 && RPCManager.Instance.rpc_A == RPCManager.rpc_State.Stay)
             {
                 RPCManager.Instance.currentPlayer--;
+                currentScene = Scenes.FindMatch;
             }
         }
 
         // 매칭 대기 <-> 매칭 완료 상황 별 [Escape] 버튼 조정하기 !!!
-        if (currentScene == Scenes.MatchFound)
-        {
-            escape_btn.SetActive(false);
-        }
-        else if (currentScene == Scenes.FindMatch)
-        {
-            escape_btn.SetActive(true);
-        }
     }
 }
