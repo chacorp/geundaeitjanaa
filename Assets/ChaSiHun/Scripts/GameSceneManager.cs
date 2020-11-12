@@ -118,7 +118,7 @@ public class GameSceneManager : MonoBehaviour
         player = Instantiate(playerPrefab);
         ResetPlayer();
         player.SetActive(false);
-        playerPrefab = player.transform.GetChild(0).gameObject;
+        playerModel = player.transform.GetChild(0).gameObject;
         #endregion
 
         #region 컴포넌트 가져오기
