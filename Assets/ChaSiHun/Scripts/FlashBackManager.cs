@@ -4,9 +4,15 @@ using UnityEngine.UI;
 
 public class FlashBackManager : MonoBehaviour
 {
+    [Header("FlashBack")]
     public GameObject flachBack_UI;
     public RectTransform filmRoll;
     public GameObject filmShot_Prefab;
+
+
+    [Header("LookAtTheAlbum")]
+    public Transform albumContent;
+    public GameObject albumImg_prefab;
 
     public bool playFlashBack = false;
 
@@ -28,14 +34,24 @@ public class FlashBackManager : MonoBehaviour
     {
         // 사진 만들어서 필름 롤에 추가해놓기
         GameObject n_shot = Instantiate(filmShot_Prefab, filmRoll.transform);
-        RectTransform n_shot_rt = n_shot.GetComponent<RectTransform>();
+        GameObject n_album = Instantiate(albumImg_prefab, albumContent);
 
-        // 자식(ScreenShot) 가져오기
-        Transform n_frame = n_shot.transform.GetChild(0);
+        RectTransform n_shot_rt = n_shot.GetComponent<RectTransform>();
+        RectTransform n_album_rt = n_album.GetComponent<RectTransform>();
+
+        // 이미지 높이 가져오기
+        int n_shot_H = (int)n_shot.transform.GetChild(0).GetComponent<RectTransform>().rect.height;
+        int n_album_H = 900;
 
         // 위치 잡아두기
-        n_shot_rt.anchoredPosition = new Vector2(0, (int)n_frame.GetComponent<RectTransform>().rect.height * -filmShots.Count);
+        n_shot_rt.anchoredPosition = new Vector2(0, -n_shot_H * filmShots.Count);
+        n_album_rt.anchoredPosition = new Vector2(0, -n_album_H * (albumContent.childCount-1) - 450);
+
+        if(albumContent.childCount > 1) albumContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, n_album_H);
+        
+
         n_shot.transform.GetComponent<Image>().sprite = memory;
+        n_album.transform.GetComponent<Image>().sprite = memory;
 
         // 리스트에 넣어두기
         filmShots.Add(n_shot);
@@ -50,11 +66,7 @@ public class FlashBackManager : MonoBehaviour
             delay += Time.deltaTime;
             if (delay > 2)
             {
-                playFlashBack = false;
-                filmRoll.anchoredPosition = Vector2.zero;
-
-                flachBack_UI.SetActive(false);
-                return;
+                EmptyFilms();
             }
         }
         else
@@ -65,12 +77,22 @@ public class FlashBackManager : MonoBehaviour
             // 일정 높이 만큼 올라갔다면, 꺼버리기
             if (filmRoll.anchoredPosition.y > (600 * filmShots.Count) + limit)
             {
-                playFlashBack = false;
-                filmRoll.anchoredPosition = Vector2.zero;
-
-                flachBack_UI.SetActive(false);
+                EmptyFilms();
             }
         }
+    }
+
+    void EmptyFilms()
+    {
+        // 위치 리셋
+        filmRoll.anchoredPosition = new Vector2(0, -limit);
+        // 비활성화
+        flachBack_UI.SetActive(false);
+        // 비우기
+        if(filmShots.Count > 0) filmShots.Clear();
+
+        GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.GameStart;
+        playFlashBack = false;
     }
 
     void Update()

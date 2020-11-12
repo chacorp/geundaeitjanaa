@@ -349,6 +349,7 @@ public class GameSceneManager : MonoBehaviour
 
         // 시작화면으로 초기화 => 서버 나가기
         currentScene = Scenes.GameStart;
+        ScreenShot.Instance.recentPhoto.Clear();
 
         // 주마등
         FBM.playFlashBack = true;

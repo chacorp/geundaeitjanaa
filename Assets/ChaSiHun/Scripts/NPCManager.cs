@@ -119,6 +119,7 @@ public class NPCManager : MonoBehaviour
                 {
                     n.GetChild(0).localPosition = Vector3.up;
                     n.position = npcPos[npcWait.IndexOf(n)];
+                    if(!n.gameObject.activeSelf) n.gameObject.SetActive(true);
                 }
                 n_idx = 0;
                 break;
