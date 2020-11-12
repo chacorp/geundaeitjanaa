@@ -502,7 +502,7 @@ MonoBehaviour:
   currentPlayer: 0
   RPC_prefab: {fileID: 5629519891890058577, guid: 242a1d01dac27d048bdedd99320f5074,
     type: 3}
-  npc_A: 0
+  rpc_A: 0
   spawnPoint: {fileID: 1173417144}
   targetPoint: {fileID: 4125966568418122}
 --- !u!1 &66758505
@@ -1350,6 +1350,7 @@ GameObject:
   - component: {fileID: 216242840}
   - component: {fileID: 216242839}
   - component: {fileID: 216242841}
+  - component: {fileID: 216242842}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -1379,7 +1380,7 @@ MonoBehaviour:
   cameraPos: {fileID: 1847883465}
   mainmenuPos: {fileID: 1023119694}
   player: {fileID: 5629519890812572967}
-  playerPrefab: {fileID: 0}
+  playerModel: {fileID: 0}
   jumpP: 5
   menuCam: {fileID: 1277130145}
   playerCam: {fileID: 7772533257676643583}
@@ -1410,7 +1411,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6508fd1579aeedb46a4d87530d9fcdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recentPhoto: {fileID: 21300000, guid: bbc2701e8c63ab14b9782acff5b12567, type: 3}
+  recentPhoto: []
+--- !u!114 &216242842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216242838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cf945eae00dfea4e9b1519c7437dbcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flachBack_UI: {fileID: 651698443}
+  filmRoll: {fileID: 1038633145}
+  filmShot_Prefab: {fileID: 6028586563311929958, guid: 1a061ab10a5bc9a489f379247355b5ac,
+    type: 3}
+  playFlashBack: 0
+  rollUpSpeed: 400
 --- !u!1 &223889924
 GameObject:
   m_ObjectHideFlags: 0
@@ -2793,6 +2812,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584342180}
   m_CullTransparentMesh: 0
+--- !u!1 &651698443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 651698444}
+  - component: {fileID: 651698446}
+  - component: {fileID: 651698445}
+  m_Layer: 5
+  m_Name: FlashBack_UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &651698444
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651698443}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1038633145}
+  m_Father: {fileID: 869130460}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &651698445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651698443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.9490196}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &651698446
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651698443}
+  m_CullTransparentMesh: 0
 --- !u!1 &668435281
 GameObject:
   m_ObjectHideFlags: 0
@@ -3336,6 +3430,7 @@ RectTransform:
   - {fileID: 1263590229}
   - {fileID: 229642457}
   - {fileID: 170131113}
+  - {fileID: 651698444}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3637,6 +3732,41 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1028688899}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1038633144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1038633145}
+  m_Layer: 5
+  m_Name: FilmRoll
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1038633145
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1038633144}
+  m_LocalRotation: {x: 0, y: 0, z: 0.026176924, w: 0.99965733}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 651698444}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 3}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -1200}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1047770948
 GameObject:
   m_ObjectHideFlags: 0
