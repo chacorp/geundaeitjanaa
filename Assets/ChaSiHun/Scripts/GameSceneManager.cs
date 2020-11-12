@@ -46,7 +46,7 @@ public class GameSceneManager : MonoBehaviour
     public Transform mainmenuPos;
 
     [Header("플레이어")]
-    public GameObject playerPrefab;
+    //public GameObject playerPrefab;
     public GameObject player;
     public GameObject playerModel;
     public float jumpP = 5f;
@@ -115,7 +115,7 @@ public class GameSceneManager : MonoBehaviour
 
         #region 플레이어 설정
         // 플레이어 생성 및 위치 초기화
-        player = Instantiate(playerPrefab);
+        //player = Instantiate(playerPrefab);
         ResetPlayer();
         player.SetActive(false);
         playerModel = player.transform.GetChild(0).gameObject;
