@@ -1,0 +1,5 @@
+sceneSetups:
+- path: Assets/FrostweepGames/GCSpeechRecognition/GCSR_Examples/GCSR_Example_1/GCSR_Example.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0
