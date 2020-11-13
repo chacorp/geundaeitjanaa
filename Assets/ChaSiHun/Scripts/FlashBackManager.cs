@@ -1,6 +1,7 @@
 ﻿using Boo.Lang;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class FlashBackManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class FlashBackManager : MonoBehaviour
     // 올라가는 속도
     public float rollUpSpeed = 200f;
 
+    float delay;
 
     private void Start()
     {
@@ -29,34 +31,42 @@ public class FlashBackManager : MonoBehaviour
         // 필름 롤의 시작 위치 잡기
         filmRoll.anchoredPosition = new Vector2(0, -limit);
     }
+    
+    public void AddAlbum(Sprite memory)
+    {
+        // 사진을 담을 gameobject 만들기
+        GameObject n_album = Instantiate(albumImg_prefab, albumContent);
+        RectTransform n_album_rt = n_album.GetComponent<RectTransform>();
+
+        int n_album_H = 900;
+        // 위치 잡기
+        n_album_rt.anchoredPosition = new Vector2(0, -n_album_H * (albumContent.childCount - 1) - 450);
+
+        // 앨범 크기 늘려주기
+        if (albumContent.childCount > 1) albumContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, n_album_H);
+
+        // 사진 넣기
+        n_album.transform.GetComponent<Image>().sprite = memory;
+    }
 
     public void AddMemory(Sprite memory)
     {
         // 사진 만들어서 필름 롤에 추가해놓기
         GameObject n_shot = Instantiate(filmShot_Prefab, filmRoll.transform);
-        GameObject n_album = Instantiate(albumImg_prefab, albumContent);
-
         RectTransform n_shot_rt = n_shot.GetComponent<RectTransform>();
-        RectTransform n_album_rt = n_album.GetComponent<RectTransform>();
 
         // 이미지 높이 가져오기
         int n_shot_H = (int)n_shot.transform.GetChild(0).GetComponent<RectTransform>().rect.height;
-        int n_album_H = 900;
 
         // 위치 잡아두기
-        n_shot_rt.anchoredPosition = new Vector2(0, -n_shot_H * filmShots.Count);
-        n_album_rt.anchoredPosition = new Vector2(0, -n_album_H * (albumContent.childCount-1) - 450);
+        n_shot_rt.anchoredPosition = new Vector2(0, -n_shot_H * filmShots.Count);         
 
-        if(albumContent.childCount > 1) albumContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, n_album_H);
-        
-
+        // 이미지에 sprite 넣기
         n_shot.transform.GetComponent<Image>().sprite = memory;
-        n_album.transform.GetComponent<Image>().sprite = memory;
 
         // 리스트에 넣어두기
         filmShots.Add(n_shot);
     }
-    float delay;
     public void FlashBack()
     {
         flachBack_UI.SetActive(true);
@@ -91,7 +101,9 @@ public class FlashBackManager : MonoBehaviour
         // 비우기
         if(filmShots.Count > 0) filmShots.Clear();
 
-        GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.GameStart;
+        // 메인 메뉴로 돌아가!
+        GameSceneManager.Instance.OnStartGameClicked();
+        //GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.MainMenu;
         playFlashBack = false;
     }
 

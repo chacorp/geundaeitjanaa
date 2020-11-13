@@ -347,9 +347,10 @@ public class GameSceneManager : MonoBehaviour
             RPCManager.Instance.currentPlayer--;
         }
 
-        // 시작화면으로 초기화 => 서버 나가기
-        currentScene = Scenes.MainMenu;
         ScreenShot.Instance.recentPhoto.Clear();
+
+        // 이거 아래에 있는 주마등 함수에서 대신 해줌 (시작화면으로 초기화 => 서버 나가기)
+        //currentScene = Scenes.MainMenu;
 
         // 주마등
         FBM.playFlashBack = true;

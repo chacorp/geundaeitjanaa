@@ -29,12 +29,17 @@ public class ScreenShot : MonoBehaviour
     // 주마등을 위한 함수....!
     FlashBackManager FBM;
 
+    long beforePNGs;
+    long afterPNGs;
 
     private void Awake()
     {
         saved_Photos = PlayerPrefs.GetInt("photoNum", 0);
         mainCam = Camera.main;
         FBM = GetComponent<FlashBackManager>();
+
+        // 경로에 있는 png 갯수 가져오기
+        beforePNGs = Directory.GetFiles(GetDirPath(), "*.png").Length;
     }
 
     public bool nowCapturing { get; private set; }
@@ -111,8 +116,18 @@ public class ScreenShot : MonoBehaviour
     }
 
 
+    private void Update()
+    {
+        if(beforePNGs != afterPNGs)
+        {
+            GetAlbumPNGs();
+
+            afterPNGs = beforePNGs;
+        }
+    }
 
     #region 폴더 경로 가져오기
+
     static void VerifyDirectory()
     {
         string dir = GetDirPath();
@@ -125,6 +140,37 @@ public class ScreenShot : MonoBehaviour
     static string GetDirPath()
     {
         return Application.dataPath + "/" + directoryName;
+    }
+
+
+    // Album 폴더에서 이미지 가져오기
+    void GetAlbumPNGs()
+    {
+        Rect textRect = new Rect(0, 0, Screen.width, Screen.height);
+        byte[] fileData;
+
+        // 경로에 있는 모든 ".png" 파일을 string으로 가져오기
+        string[] PNGs = Directory.GetFiles(GetDirPath(), "*.png");
+
+        // PNGs 속에 있는 각각의 string들에 대해서,
+        foreach (string PNG in PNGs)
+        {
+            // 만약 PNG가 파일로 있다면
+            if (File.Exists(PNG))
+            {
+                // PNG를 바이트로 읽어오고
+                fileData = File.ReadAllBytes(PNG);
+
+                // 새로운 텍스쳐 만들고
+                Texture2D tex = new Texture2D((int)textRect.width, (int)textRect.height);
+
+                // 텍스쳐에서 PNG 읽기
+                tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+
+                // FBM에 읽어낸 텍스쳐를 Sprite로 넘기기
+                FBM.AddAlbum(Sprite.Create(tex, textRect, new Vector2(0.5f, 0.5f)));
+            }
+        }
     }
     #endregion
 }
