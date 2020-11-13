@@ -1578,7 +1578,6 @@ MonoBehaviour:
   cameraPos: {fileID: 1847883465}
   mainmenuPos: {fileID: 1023119694}
   player: {fileID: 1888479385}
-  playerModel: {fileID: 0}
   jumpP: 5
   menuCam: {fileID: 1277130145}
   playerCam: {fileID: 7772533257676643583}
@@ -10855,7 +10854,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1771660276}
   m_Layer: 0
-  m_Name: ------------------------------
+  m_Name: -------NetworkManagers-------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
