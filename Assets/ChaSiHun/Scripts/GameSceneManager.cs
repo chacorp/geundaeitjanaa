@@ -48,7 +48,7 @@ public class GameSceneManager : MonoBehaviour
     [Header("플레이어")]
     //public GameObject playerPrefab;
     public GameObject player;
-    public GameObject playerModel;
+    public GameObject playerModel { get; private set; }
     public float jumpP = 5f;
 
     [Header("카메라")]
