@@ -32,6 +32,7 @@ public class FlashBackManager : MonoBehaviour
         filmRoll.anchoredPosition = new Vector2(0, -limit);
     }
     
+    // 앨범에 사진 만들어두기
     public void AddAlbum(Sprite memory)
     {
         // 사진을 담을 gameobject 만들기

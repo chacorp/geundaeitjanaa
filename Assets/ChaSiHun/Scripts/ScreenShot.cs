@@ -19,9 +19,10 @@ public class ScreenShot : MonoBehaviour
 
     // 현재 게임에서 얻은 사진
     public int current_Photos { get; private set; }
-
-    // 지난 게임부터 현재까지 모든 게임에서 얻은 사진
+    // 지난 게임부터 현재까지 모든 게임에서 찍은 사진의 갯수 (폴더에 있는 사진 갯수 아님)
     int saved_Photos = 0;
+    // Album 폴더에 있는 사진의 갯수
+    long existing_Photos;
 
     // 게임화면(3D)을 보여주는 카메라
     Camera mainCam;
@@ -29,8 +30,12 @@ public class ScreenShot : MonoBehaviour
     // 주마등을 위한 함수....!
     FlashBackManager FBM;
 
-    long beforePNGs;
-    long afterPNGs;
+
+    // 현재는 사진이 추가될때마다 앨범에 있는거 전부 다 덮어써져서 중복된다
+    // 일단 앨범 폴더에 있는 것을 추가하고, 
+    // 스크린 샷 찍을 때마다 추가되는 것을 불러와야 한다!
+
+
 
     private void Awake()
     {
@@ -39,7 +44,10 @@ public class ScreenShot : MonoBehaviour
         FBM = GetComponent<FlashBackManager>();
 
         // 경로에 있는 png 갯수 가져오기
-        beforePNGs = Directory.GetFiles(GetDirPath(), "*.png").Length;
+        existing_Photos = Directory.GetFiles(GetDirPath(), "*.png").Length;
+
+        // 앨범에 png가 있다면 일단 앨범으로 가져오기
+        PresetAlbumPNGs();
     }
 
     public bool nowCapturing { get; private set; }
@@ -118,12 +126,6 @@ public class ScreenShot : MonoBehaviour
 
     private void Update()
     {
-        if(beforePNGs != afterPNGs)
-        {
-            GetAlbumPNGs();
-
-            afterPNGs = beforePNGs;
-        }
     }
 
     #region 폴더 경로 가져오기
@@ -144,7 +146,7 @@ public class ScreenShot : MonoBehaviour
 
 
     // Album 폴더에서 이미지 가져오기
-    void GetAlbumPNGs()
+    void PresetAlbumPNGs()
     {
         Rect textRect = new Rect(0, 0, Screen.width, Screen.height);
         byte[] fileData;
