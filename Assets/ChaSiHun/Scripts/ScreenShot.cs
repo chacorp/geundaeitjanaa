@@ -20,9 +20,9 @@ public class ScreenShot : MonoBehaviour
     // 현재 게임에서 얻은 사진
     public int current_Photos { get; private set; }
     // 지난 게임부터 현재까지 모든 게임에서 찍은 사진의 갯수 (폴더에 있는 사진 갯수 아님)
-    int saved_Photos = 0;
-    // Album 폴더에 있는 사진의 갯수
-    long existing_Photos;
+    int ShotCount = 0;
+    int before_Photos;
+
 
     // 게임화면(3D)을 보여주는 카메라
     Camera mainCam;
@@ -39,15 +39,15 @@ public class ScreenShot : MonoBehaviour
 
     private void Awake()
     {
-        saved_Photos = PlayerPrefs.GetInt("photoNum", 0);
+        ShotCount = PlayerPrefs.GetInt("photoNum", 0);
         mainCam = Camera.main;
         FBM = GetComponent<FlashBackManager>();
 
         // 경로에 있는 png 갯수 가져오기
-        existing_Photos = Directory.GetFiles(GetDirPath(), "*.png").Length;
+        before_Photos = Directory.GetFiles(GetDirPath(), "*.png").Length;
 
         // 앨범에 png가 있다면 일단 앨범으로 가져오기
-        PresetAlbumPNGs();
+        AwakeAlbum();
     }
 
     public bool nowCapturing { get; private set; }
@@ -103,11 +103,14 @@ public class ScreenShot : MonoBehaviour
 
         // 원하는 경로에 png파일로 저장하기
         byte[] bytes = screenShot.EncodeToPNG();
-        File.WriteAllBytes(GetDirPath() + $"/captured_{saved_Photos}.png", bytes);
+        File.WriteAllBytes(GetDirPath() + $"/captured_{ShotCount}.png", bytes);
 
         // 사진 갯수 누적!
-        PlayerPrefs.SetInt("photoNum", ++saved_Photos);
-        current_Photos++;
+        PlayerPrefs.SetInt("photoNum", ++ShotCount);
+        ++current_Photos;
+
+        // 앨범에 사진 업데이트 하기
+        UpdateAlbum();
 
         // FlashBack에 추가하기
         FBM.AddMemory(recentPhoto[recentPhoto.Count - 1]);
@@ -123,30 +126,9 @@ public class ScreenShot : MonoBehaviour
         yield return 0;
     }
 
-
-    private void Update()
-    {
-    }
-
-    #region 폴더 경로 가져오기
-
-    static void VerifyDirectory()
-    {
-        string dir = GetDirPath();
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
-    }
-
-    static string GetDirPath()
-    {
-        return Application.dataPath + "/" + directoryName;
-    }
-
-
-    // Album 폴더에서 이미지 가져오기
-    void PresetAlbumPNGs()
+    #region 앨범에 사진 추가하기
+    // Album 폴더에서 PNG 가져와서 미리셋팅하기
+    void AwakeAlbum()
     {
         Rect textRect = new Rect(0, 0, Screen.width, Screen.height);
         byte[] fileData;
@@ -164,7 +146,7 @@ public class ScreenShot : MonoBehaviour
                 fileData = File.ReadAllBytes(PNG);
 
                 // 새로운 텍스쳐 만들고
-                Texture2D tex = new Texture2D((int)textRect.width, (int)textRect.height);
+                Texture2D tex = new Texture2D(Screen.width, Screen.height);
 
                 // 텍스쳐에서 PNG 읽기
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
@@ -172,7 +154,60 @@ public class ScreenShot : MonoBehaviour
                 // FBM에 읽어낸 텍스쳐를 Sprite로 넘기기
                 FBM.AddAlbum(Sprite.Create(tex, textRect, new Vector2(0.5f, 0.5f)));
             }
+            else
+            {
+                Debug.Log("Can't find a new photo!!");
+            }
         }
     }
+
+    // 새로 찍은 사진 추가하기
+    void UpdateAlbum()
+    {
+        Rect textRect = new Rect(0, 0, Screen.width, Screen.height);
+        byte[] fileData;
+
+        // 경로에 있는 ".png" 파일 중에서 가장 마지막을 string으로 가져오기
+        string PNG = Directory.GetFiles(GetDirPath(), "*.png")[(before_Photos + current_Photos) - 1];
+
+        // 만약 PNG가 파일로 있다면
+        if (File.Exists(PNG))
+        {
+            // PNG를 바이트로 읽어오고
+            fileData = File.ReadAllBytes(PNG);
+
+            // 새로운 텍스쳐 만들고
+            Texture2D tex = new Texture2D((int)textRect.width, (int)textRect.height);
+
+            // 텍스쳐에서 PNG 읽기
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+
+            // FBM에 읽어낸 텍스쳐를 Sprite로 넘기기
+            FBM.AddAlbum(Sprite.Create(tex, textRect, new Vector2(0.5f, 0.5f)));
+        }
+        else
+        {
+            Debug.Log($"There are no \".png\" file in the path: {GetDirPath()}");
+        }
+    }
+
+    #endregion
+
+    #region 폴더 경로 가져오기
+
+    static void VerifyDirectory()
+    {
+        string dir = GetDirPath();
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+    }
+
+    static string GetDirPath()
+    {
+        return Application.dataPath + "/" + directoryName;
+    }
+
     #endregion
 }
