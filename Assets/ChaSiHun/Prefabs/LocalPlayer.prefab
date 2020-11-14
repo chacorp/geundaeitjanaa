@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3483610969371616602}
   - component: {fileID: 4757397939187502817}
+  - component: {fileID: 931700155183666394}
   m_Layer: 0
   m_Name: LocalPlayer
   m_TagString: Untagged
@@ -47,3 +48,32 @@ MonoBehaviour:
   localPlayerAuthority: 1
   m_AssetId: 
   m_SceneId: 0
+--- !u!114 &931700155183666394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094190563064398602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6ba3169603e004f93a39beb76cf79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  m_NameText: {fileID: 0}
+  m_Crown: {fileID: 0}
+  m_SpeakingIndicator: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_TeamID: 0
+  m_PlayerDisplayName: 
+  m_AccountID: 
+  m_PlayerNumber: 0
+  m_LocalID: 0
+  m_IsReady: 0
+  m_score: 0
+  m_inGamePositionalVoice: {fileID: 0}
+  AudibleDistance: 32
+  ConversationalDistance: 1
+  AudioFadeIntensityByDistance: 1
+  AudioFadeModel: 1
