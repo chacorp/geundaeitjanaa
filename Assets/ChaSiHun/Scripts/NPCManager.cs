@@ -28,23 +28,29 @@ public class NPCManager : MonoBehaviour
     Transform npcJ_T;
     Rigidbody npcJ_R;
 
+    GameSceneManager GSManager;
     void Start()
     {
+        GSManager = GameSceneManager.Instance;
+
         // NPC의 자식 오브젝트들 가져오기
         for (int i = 0; i < NPCs.childCount; i++) npcWait.Add(NPCs.GetChild(i));
 
         // 각 위치 저장해두기
         for (int i = 0; i < npcWait.Count; i++) npcPos.Add(npcWait[i].position);
 
-        Step = Sequence.jump;
+        if (GSManager.isOnline)
+            Step = Sequence.reset;
+        else
+            Step = Sequence.jump;
     }
     void NPCJUMP()
     {
         // [StartGame] 버튼이 눌렸다면, 리셋하기
-        if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.MainMenu) Step = Sequence.reset;
+        if (GSManager.currentScene == GameSceneManager.Scenes.MainMenu) Step = Sequence.reset;
 
         // 만약 [Escape] 버튼을 눌렀고, 스텝이 '리셋'이라면, 다시 루프 돌리기 바꾸기
-        else if (GameSceneManager.Instance.currentScene == GameSceneManager.Scenes.GameStart && Step == Sequence.reset) Step = Sequence.jump;
+        else if (GSManager.currentScene == GameSceneManager.Scenes.GameStart && Step == Sequence.reset) Step = Sequence.jump;
 
         Prefab_Float nFwP;
 
@@ -129,7 +135,7 @@ public class NPCManager : MonoBehaviour
     // 맨 앞에 있는 npc 녀석을 안 보이게 하고, 그 자리에 플레이어를 표시하기 위한 함수
     void NPC_ACTIVE_CONTROLL()
     {
-        if ((int)GameSceneManager.Instance.currentScene > 0)
+        if ((int)GSManager.currentScene > 0)
         {
             // 맨 앞자리 녀석 비활성화
             if (npcWait[0].gameObject.activeSelf) npcWait[0].gameObject.SetActive(false);

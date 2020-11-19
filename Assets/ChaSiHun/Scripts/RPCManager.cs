@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class RPCManager : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class RPCManager : MonoBehaviour
     // 따라갈 녀석
     Transform follower;
 
+    GameSceneManager GSManager;
     public enum rpc_State
     {
         None,
@@ -46,6 +48,7 @@ public class RPCManager : MonoBehaviour
 
     void Start()
     {
+        GSManager = GameSceneManager.Instance;
         // 다른 플레이어 캐릭터 만들어두기
         for (int i = 0; i < MaxRPCs; i++)
         {
@@ -57,11 +60,11 @@ public class RPCManager : MonoBehaviour
         }
 
         // 오브젝트 가져오기
-        playerObj = GameSceneManager.Instance.player.transform;
+        playerObj = GSManager.player.transform;
         follower = GameObject.FindGameObjectWithTag("Respawn").transform;
 
 
-        rpc_A = rpc_State.None;
+        rpc_A = rpc_State.None; 
     }
 
     // 플레이어에게 접근하기!!
@@ -79,7 +82,7 @@ public class RPCManager : MonoBehaviour
             rpc.transform.SetParent(follower);
             // 그만 접근하기
             rpc_A = rpc_State.Stay;
-            GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.MatchFound;
+            GSManager.currentScene = GameSceneManager.Scenes.MatchFound;
         }
     }
 
@@ -104,7 +107,7 @@ public class RPCManager : MonoBehaviour
 
             // 그만 접근하기
             rpc_A = rpc_State.None;
-            GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.FindMatch;
+            GSManager.currentScene = GameSceneManager.Scenes.FindMatch;
         }
     }
 
@@ -148,7 +151,7 @@ public class RPCManager : MonoBehaviour
                 break;
 
             case rpc_State.TakePhoto:
-                GameSceneManager.Instance.Take_A_Photo();
+                GSManager.Take_A_Photo();
 
                 // 반복 안 하게 enum 바꿔주기
                 rpc_A = rpc_State.None;

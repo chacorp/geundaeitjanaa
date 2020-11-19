@@ -30,6 +30,7 @@ public class GameSceneManager : MonoBehaviour
     {
         Instance = this;
     }
+    public bool isOnline;
 
     [Header("메뉴")]
     public GameObject startGame_UI;
@@ -123,6 +124,19 @@ public class GameSceneManager : MonoBehaviour
 
         #region 컴포넌트 가져오기
         FBM = GetComponent<FlashBackManager>();
+        #endregion
+
+        #region 온라인 오프라인 세팅
+        if (isOnline)
+        {
+            OnStartGameClicked();
+            OnJointhePoolClicked();
+        }
+
+        if(currentScene == Scenes.MainMenu)
+        {
+            OnStartGameClicked();
+        }
         #endregion
     }
 
@@ -233,6 +247,7 @@ public class GameSceneManager : MonoBehaviour
     // [Join_the_Pool] << 버튼
     public void OnJointhePoolClicked()
     {
+        if (!isOnline) return;
         // Scene 전환하기
         currentScene = Scenes.FindMatch;
 
@@ -388,12 +403,23 @@ public class GameSceneManager : MonoBehaviour
 
     void FirstImpression()
     {
+       // 5초간 얘기하는거
+    }
 
+    void ClientSelction()
+    {
+        // 대화를 지속할 것인지, 말 것인지 선택!
+
+        // 지속하면 
+        KeepTalking();
+
+        // 아니라면 
+        QuitingMatch();
     }
 
     void KeepTalking()
     {
-
+        // 대화를 지속 한다면 발동!
     }
     #endregion
 
@@ -407,7 +433,26 @@ public class GameSceneManager : MonoBehaviour
     //======================================================================================
     #endregion
 
+    void JoiningMatch()
+    {
+        if (Input.GetKeyDown(KeyCode.A)
+            && RPCManager.Instance.currentPlayer < RPCManager.Instance.MaxRPCs
+            && RPCManager.Instance.rpc_A == RPCManager.rpc_State.None)
+        {
+            RPCManager.Instance.currentPlayer++;
+            currentScene = Scenes.MatchFound;
+        }
+    }
 
+    public void QuitingMatch()
+    {   //if (Input.GetKeyDown(KeyCode.D)
+        if (RPCManager.Instance.currentPlayer > 0
+            && RPCManager.Instance.rpc_A == RPCManager.rpc_State.Stay)
+        {
+            RPCManager.Instance.currentPlayer--;
+            currentScene = Scenes.FindMatch;
+        }
+    }
 
     private void Update()
     {
@@ -423,25 +468,14 @@ public class GameSceneManager : MonoBehaviour
         if (currentScene == Scenes.FindMatch)
         {
             escape_btn.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.A) && RPCManager.Instance.currentPlayer < RPCManager.Instance.MaxRPCs && RPCManager.Instance.rpc_A == RPCManager.rpc_State.None)
-            {
-                RPCManager.Instance.currentPlayer++;
-                currentScene = Scenes.MatchFound;
-            }
+
+            JoiningMatch();
         }
         else if (currentScene == Scenes.MatchFound)
         {
             escape_btn.SetActive(false);
             // 첫 대화 시작하기
             FirstImpression();
-
-            if (Input.GetKeyDown(KeyCode.D) && RPCManager.Instance.currentPlayer > 0 && RPCManager.Instance.rpc_A == RPCManager.rpc_State.Stay)
-            {
-                RPCManager.Instance.currentPlayer--;
-                currentScene = Scenes.FindMatch;
-            }
         }
-
-        // 매칭 대기 <-> 매칭 완료 상황 별 [Escape] 버튼 조정하기 !!!
     }
 }
