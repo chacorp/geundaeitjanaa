@@ -446,7 +446,8 @@ public class GameSceneManager : MonoBehaviour
 
     public void QuitingMatch()
     {   //if (Input.GetKeyDown(KeyCode.D)
-        if (RPCManager.Instance.currentPlayer > 0
+        if (Input.GetKeyDown(KeyCode.D)
+            && RPCManager.Instance.currentPlayer > 0
             && RPCManager.Instance.rpc_A == RPCManager.rpc_State.Stay)
         {
             RPCManager.Instance.currentPlayer--;
@@ -476,6 +477,7 @@ public class GameSceneManager : MonoBehaviour
             escape_btn.SetActive(false);
             // 첫 대화 시작하기
             FirstImpression();
+            QuitingMatch();
         }
     }
 }

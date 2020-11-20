@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -70,7 +71,7 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 			_longRunningRecognizeToggle = transform.Find("Canvas/Toggle_LongRunningRecognize").GetComponent<Toggle>();
 
 			_languageDropdown = transform.Find("Canvas/Dropdown_Language").GetComponent<Dropdown>();
-			_microphoneDevicesDropdown = transform.Find("Canvas/Dropdown_MicrophoneDevices").GetComponent<Dropdown>();		
+			_microphoneDevicesDropdown = transform.Find("Canvas/Dropdown_MicrophoneDevices").GetComponent<Dropdown>();
 
 			_contextPhrasesInputField = transform.Find("Canvas/InputField_SpeechContext").GetComponent<InputField>();
 			_operationIdInputField = transform.Find("Canvas/InputField_Operation").GetComponent<InputField>();
@@ -99,7 +100,8 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 				_languageDropdown.options.Add(new Dropdown.OptionData(((Enumerators.LanguageCode)i).Parse()));
 			}
 
-			_languageDropdown.value = _languageDropdown.options.IndexOf(_languageDropdown.options.Find(x => x.text == Enumerators.LanguageCode.en_GB.Parse()));
+			//_languageDropdown.value = _languageDropdown.options.IndexOf(_languageDropdown.options.Find(x => x.text == Enumerators.LanguageCode.en_GB.Parse()));
+			//_languageDropdown.value = 'ko-KR';
 
 			RefreshMicsButtonOnClickHandler();
 		}
@@ -124,14 +126,14 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 
 		private void Update()
 		{
-			if(_speechRecognition.IsRecording)
+			if (_speechRecognition.IsRecording)
 			{
 				if (_speechRecognition.GetMaxFrame() > 0)
 				{
 					float max = (float)_speechRecognition.configs[_speechRecognition.currentConfigIndex].voiceDetectionThreshold;
 					float current = _speechRecognition.GetLastFrame() / max;
 
-					if(current >= 1f)
+					if (current >= 1f)
 					{
 						_voiceLevelImage.fillAmount = Mathf.Lerp(_voiceLevelImage.fillAmount, Mathf.Clamp(current / 2f, 0, 1f), 30 * Time.deltaTime);
 					}
@@ -193,7 +195,7 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 
 		private void GetOperationButtonOnClickHandler()
 		{
-			if(string.IsNullOrEmpty(_operationIdInputField.text))
+			if (string.IsNullOrEmpty(_operationIdInputField.text))
 			{
 				_resultText.text = "<color=red>Operatinon name is empty</color>";
 				return;
@@ -266,7 +268,7 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 				return;
 
 			RecognitionConfig config = RecognitionConfig.GetDefault();
-			// config.languageCode = ((Enumerators.LanguageCode)_languageDropdown.value).Parse();
+			//config.languageCode = ((Enumerators.LanguageCode)_languageDropdown.value).Parse();
 			config.languageCode = "ko-KR";
 			config.speechContexts = new SpeechContext[]
 			{
@@ -275,6 +277,7 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 					phrases = _contextPhrasesInputField.text.Replace(" ", string.Empty).Split(',')
 				}
 			};
+
 			config.audioChannelCount = clip.channels;
 			// configure other parameters of the config if need
 
@@ -312,9 +315,9 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 		}
 
 		private void RecognizeFailedEventHandler(string error)
-        {
-            _resultText.text = "Recognize Failed: " + error;
-        }
+		{
+			_resultText.text = "Recognize Failed: " + error;
+		}
 
 		private void LongRunningRecognizeFailedEventHandler(string error)
 		{
@@ -341,50 +344,50 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 			_resultText.text = "Get Operation Success.\n";
 			_resultText.text += "name: " + operation.name + "; done: " + operation.done;
 
-			if(operation.done && (operation.error == null || string.IsNullOrEmpty(operation.error.message)))
+			if (operation.done && (operation.error == null || string.IsNullOrEmpty(operation.error.message)))
 			{
 				InsertRecognitionResponseInfo(operation.response);
-			}		
+			}
 		}
 
 		private void RecognizeSuccessEventHandler(RecognitionResponse recognitionResponse)
-        {
+		{
 			_resultText.text = "Recognize Success.";
 			InsertRecognitionResponseInfo(recognitionResponse);
-        }
+		}
 
-        private void LongRunningRecognizeSuccessEventHandler(Operation operation)
-        {
+		private void LongRunningRecognizeSuccessEventHandler(Operation operation)
+		{
 			if (operation.error != null || !string.IsNullOrEmpty(operation.error.message))
 				return;
 
 			_resultText.text = "Long Running Recognize Success.\n Operation name: " + operation.name;
 
 			if (operation != null && operation.response != null && operation.response.results.Length > 0)
-            {
-                _resultText.text = "Long Running Recognize Success.";
+			{
+				_resultText.text = "Long Running Recognize Success.";
 				_resultText.text += "\n" + operation.response.results[0].alternatives[0].transcript;
 
 				string other = "\nDetected alternatives:\n";
 
-                foreach (var result in operation.response.results)
-                {
-                    foreach (var alternative in result.alternatives)
-                    {
+				foreach (var result in operation.response.results)
+				{
+					foreach (var alternative in result.alternatives)
+					{
 						if (operation.response.results[0].alternatives[0] != alternative)
 						{
 							other += alternative.transcript + ", ";
 						}
-                    }
-                }
+					}
+				}
 
-                _resultText.text += other;
-            }
-            else
-            {
-                _resultText.text = "Long Running Recognize Success. Words not detected.";
-            }
-        }
+				_resultText.text += other;
+			}
+			else
+			{
+				_resultText.text = "Long Running Recognize Success. Words not detected.";
+			}
+		}
 
 		private void InsertRecognitionResponseInfo(RecognitionResponse recognitionResponse)
 		{
@@ -404,10 +407,15 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 
 				foreach (var item in recognitionResponse.results[0].alternatives[0].words)
 				{
-					times += "<color=green>" + item.word + "</color> -  start: " + item.startTime + "; end: " + item.endTime + "\n";
+					//times += "<color=green>" + item.word + "</color> -  start: " + item.startTime + "; end: " + item.endTime + "\n";
+					times += item.word;
 				}
 
 				_resultText.text += "\n" + times;
+				var fileName = "NLP_TEST.txt";
+				var sr = File.CreateText(fileName);
+				sr.WriteLine(_resultText.text);
+				sr.Close();
 			}
 
 			string other = "\nDetected alternatives: ";
@@ -425,5 +433,5 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 
 			_resultText.text += other;
 		}
-    }
+	}
 }

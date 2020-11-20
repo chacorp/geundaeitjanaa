@@ -15182,7 +15182,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00000011920929, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0.00000023841858, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &11498118
@@ -20161,6 +20161,7 @@ GameObject:
   - component: {fileID: 11467398}
   - component: {fileID: 5141709563760868621}
   - component: {fileID: 1688851044525032620}
+  - component: {fileID: 2301885881966140705}
   m_Layer: 9
   m_Name: SampleTank
   m_TagString: Untagged
@@ -20534,6 +20535,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PositionalGameObject: {fileID: 0}
+--- !u!114 &2301885881966140705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  compressRotation: 1
 --- !u!1 &173936
 GameObject:
   m_ObjectHideFlags: 0
