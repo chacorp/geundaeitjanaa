@@ -1,10 +1,10 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using FrostweepGames.Plugins.GoogleCloud.SpeechRecognition;
 
-namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
-{
-	public class GCSR_Example : MonoBehaviour
+	public class GCSR_BUTTONS : MonoBehaviour
 	{
 		private GCSpeechRecognition _speechRecognition;
 
@@ -99,7 +99,8 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 				_languageDropdown.options.Add(new Dropdown.OptionData(((Enumerators.LanguageCode)i).Parse()));
 			}
 
-			_languageDropdown.value = _languageDropdown.options.IndexOf(_languageDropdown.options.Find(x => x.text == Enumerators.LanguageCode.en_GB.Parse()));
+			//_languageDropdown.value = _languageDropdown.options.IndexOf(_languageDropdown.options.Find(x => x.text == Enumerators.LanguageCode.en_GB.Parse()));
+			//_languageDropdown.value = 'ko-KR';
 
 			RefreshMicsButtonOnClickHandler();
 		}
@@ -266,15 +267,16 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 				return;
 
 			RecognitionConfig config = RecognitionConfig.GetDefault();
-			// config.languageCode = ((Enumerators.LanguageCode)_languageDropdown.value).Parse();
+			//config.languageCode = ((Enumerators.LanguageCode)_languageDropdown.value).Parse();
 			config.languageCode = "ko-KR";
 			config.speechContexts = new SpeechContext[]
 			{
 				new SpeechContext()
 				{
-					phrases = _contextPhrasesInputField.text.Replace(" ", string.Empty).Split(',')
+					phrases = _contextPhrasesInputField.text.Replace(" ", string.Empty).Split(',')					
 				}
 			};
+
 			config.audioChannelCount = clip.channels;
 			// configure other parameters of the config if need
 
@@ -404,10 +406,15 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 
 				foreach (var item in recognitionResponse.results[0].alternatives[0].words)
 				{
-					times += "<color=green>" + item.word + "</color> -  start: " + item.startTime + "; end: " + item.endTime + "\n";
+					//times += "<color=green>" + item.word + "</color> -  start: " + item.startTime + "; end: " + item.endTime + "\n";
+					times += item.word;
 				}
 
 				_resultText.text += "\n" + times;
+				var fileName = "NLP_TEST.txt";
+				var sr = File.CreateText(fileName);
+				sr.WriteLine(_resultText.text);
+				sr.Close();
 			}
 
 			string other = "\nDetected alternatives: ";
@@ -426,4 +433,3 @@ namespace FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples
 			_resultText.text += other;
 		}
     }
-}
