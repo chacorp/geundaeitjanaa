@@ -21996,6 +21996,7 @@ MonoBehaviour:
   ConfirmationPanel: {fileID: 2206071894291074809}
   ConfirmYesButton: {fileID: 166430334544232285}
   ConfirmNoButton: {fileID: 7960342431889723309}
+  closePhoto_btn: {fileID: 576980767}
 --- !u!114 &3416765009832367579
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -322,7 +322,7 @@ public class GameSceneManager : MonoBehaviour
         // 앨범 화면 비활성화
         lookattheAlbum_UI.SetActive(false);
         // 시작화면 활성화
-        startGame_UI.SetActive(true);
+        startGame_UI.SetActive(false);
         // 메인메뉴 비활성화
         mainMenu_UI.SetActive(false);
         #endregion

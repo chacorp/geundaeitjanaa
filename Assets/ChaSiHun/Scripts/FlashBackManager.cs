@@ -30,6 +30,7 @@ public class FlashBackManager : MonoBehaviour
 
         // 필름 롤의 시작 위치 잡기
         filmRoll.anchoredPosition = new Vector2(0, -limit);
+        filmRoll.gameObject.SetActive(false);
     }
     
     // 앨범에 사진 만들어두기
@@ -50,6 +51,7 @@ public class FlashBackManager : MonoBehaviour
         n_album.transform.GetComponent<Image>().sprite = memory;
     }
 
+    // 추억(주마등)에 추가하기
     public void AddMemory(Sprite memory)
     {
         // 사진 만들어서 필름 롤에 추가해놓기
@@ -68,9 +70,12 @@ public class FlashBackManager : MonoBehaviour
         // 리스트에 넣어두기
         filmShots.Add(n_shot);
     }
+
+    // 주마등 올리기
     public void FlashBack()
     {
         flachBack_UI.SetActive(true);
+        filmRoll.gameObject.SetActive(true);
 
         if (filmShots.Count == 0)
         {
@@ -97,15 +102,17 @@ public class FlashBackManager : MonoBehaviour
     {
         // 위치 리셋
         filmRoll.anchoredPosition = new Vector2(0, -limit);
+        filmRoll.gameObject.SetActive(false);
         // 비활성화
-        flachBack_UI.SetActive(false);
+        // flachBack_UI.SetActive(false);
+
         // 비우기
         if(filmShots.Count > 0) filmShots.Clear();
 
-        // 메인 메뉴로 돌아가!
-        GameSceneManager.Instance.OnStartGameClicked();
-        //GameSceneManager.Instance.currentScene = GameSceneManager.Scenes.MainMenu;
         playFlashBack = false;
+
+        HUDInGameMenu hUDInGameMenu = FindObjectOfType<HUDInGameMenu>();
+        if (hUDInGameMenu != null) hUDInGameMenu.BackToLobby();
     }
 
     void Update()
