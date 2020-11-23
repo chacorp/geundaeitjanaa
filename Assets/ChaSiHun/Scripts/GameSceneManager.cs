@@ -133,7 +133,7 @@ public class GameSceneManager : MonoBehaviour
             OnJointhePoolClicked();
         }
 
-        if(currentScene == Scenes.MainMenu)
+        if (currentScene == Scenes.MainMenu)
         {
             OnStartGameClicked();
         }
@@ -357,10 +357,7 @@ public class GameSceneManager : MonoBehaviour
         #endregion
 
         // 만약 rpc가 있었다면, 없앤다!
-        if (RPCManager.Instance.currentPlayer > 0)
-        {
-            RPCManager.Instance.currentPlayer--;
-        }
+        if (RPCManager.Instance.currentPlayer > 0) RPCManager.Instance.currentPlayer--;
 
         ScreenShot.Instance.recentPhoto.Clear();
 
@@ -400,10 +397,10 @@ public class GameSceneManager : MonoBehaviour
     #endregion
 
     #region 대화시작
-
+    //======================================================================================
     void FirstImpression()
     {
-       // 5초간 얘기하는거
+        // 5초간 얘기하는거
     }
 
     void ClientSelction()
@@ -421,17 +418,6 @@ public class GameSceneManager : MonoBehaviour
     {
         // 대화를 지속 한다면 발동!
     }
-    #endregion
-
-    #region 전체 공통
-    //======================================================================================
-    // [Preferences] << 버튼
-    public void OnPreferenceClicked()
-    {
-        preference_UI.SetActive(true);
-    }
-    //======================================================================================
-    #endregion
 
     void JoiningMatch()
     {
@@ -454,6 +440,18 @@ public class GameSceneManager : MonoBehaviour
             currentScene = Scenes.FindMatch;
         }
     }
+    //======================================================================================
+    #endregion
+
+    #region 전체 공통
+    //======================================================================================
+    // [Preferences] << 버튼
+    public void OnPreferenceClicked()
+    {
+        preference_UI.SetActive(true);
+    }
+    //======================================================================================
+    #endregion
 
     private void Update()
     {
@@ -477,6 +475,7 @@ public class GameSceneManager : MonoBehaviour
             escape_btn.SetActive(false);
             // 첫 대화 시작하기
             FirstImpression();
+
             QuitingMatch();
         }
     }
